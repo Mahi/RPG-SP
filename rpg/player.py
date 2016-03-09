@@ -7,6 +7,7 @@ class Player(easyplayer.EasyPlayer):
         super().__init__(index)
         self._level = 0
         self._xp = 0
+        self._credits = 0
 
     @staticmethod
     def xp_to_level_up(level):
@@ -24,6 +25,7 @@ class Player(easyplayer.EasyPlayer):
     def level(self, value):
         if value < self.level:
             raise ValueError("No support for removing levels.")
+        self._credits += (value - self.level) * 5
         self._level = value
 
     @property
@@ -46,3 +48,7 @@ class Player(easyplayer.EasyPlayer):
             self._xp -= required_xp
             levels += 1
         self.level += levels
+
+    @property
+    def credits(self):
+        return self._credits
