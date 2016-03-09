@@ -1,0 +1,14 @@
+// Python
+__pycache__/
+*.pyc
+
+// Visual Studio
+.vs/
+*.pyproj
+*.sln
+
+// Database
+*.db
+
+// Translations
+*_server.ini
