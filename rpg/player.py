@@ -53,3 +53,10 @@ class Player(easyplayer.EasyPlayer):
     @property
     def credits(self):
         return self._credits
+
+    def reset_rpg_progress(self):
+        self._level = 0
+        self._xp = 0
+        self._credits = 0
+        for skill in self.skills:
+            skill.level = 0
