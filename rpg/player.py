@@ -8,6 +8,7 @@ class Player(easyplayer.EasyPlayer):
         self._level = 0
         self._xp = 0
         self._credits = 0
+        self.skills = []
 
     @staticmethod
     def xp_to_level_up(level):
