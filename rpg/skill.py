@@ -11,8 +11,9 @@ class _SkillMeta(type):
 
 class Skill(metaclass=_SkillMeta):
 
-    def __init__(self, level=0):
-        self.level = level
+    @utils.ClassProperty
+    def class_id(cls):
+        return cls.__qualname__
 
     @utils.ClassProperty
     def name(cls):
@@ -23,16 +24,6 @@ class Skill(metaclass=_SkillMeta):
         return cls.__doc__
 
     max_level = None
-
-    def upgrade_cost(self):
-        return (self.level + 1) * 5
-
-    def downgrade_refund(self):
-        return self.level * 4
-
-    @utils.ClassProperty
-    def class_id(cls):
-        return cls.__qualname__
     
     @classmethod
     def add_event_callback(cls, event_name, callback):
@@ -47,3 +38,12 @@ class Skill(metaclass=_SkillMeta):
                 cls.add_event_callback(event_name, callback)
             return callback
         return decorator
+
+    def __init__(self, level=0):
+        self.level = level
+
+    def upgrade_cost(self):
+        return (self.level + 1) * 5
+
+    def downgrade_refund(self):
+        return self.level * 4
