@@ -1,4 +1,3 @@
-import collections
 import utils
 
 
@@ -13,10 +12,11 @@ class _SkillMeta(type):
 
     def __init__(cls, name, bases, attrs):
         super().__init__(name, bases, attrs)
-        cls._event_callbacks = collections.defaultdict(list)
-        for method in attrs.values():
-            if hasattr(method, '_event'):
-                cls._event_callbacks[method._event].append(method)
+        cls._event_callbacks = {
+            method._event: method
+            for method in attrs.values()
+            if hasattr(method, '_event')
+        }
 
 
 class Skill(metaclass=_SkillMeta):
