@@ -43,3 +43,7 @@ class Skill(metaclass=_SkillMeta):
 
     def downgrade_refund(self):
         return self.level * 4
+
+    def execute_callback(self, event_name, **event_args):
+        if event_name in self._event_callbacks:
+            self._event_callbacks[event_name](self, **event_args)
