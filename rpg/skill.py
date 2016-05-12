@@ -23,15 +23,19 @@ class Skill(metaclass=_SkillMeta):
         return cls.__doc__
 
     max_level = None
-    upgrade_cost = 5
-    downgrade_refund = 4
+
+    def upgrade_cost(self):
+        return (self.level + 1) * 5
+
+    def downgrade_refund(self):
+        return self.level * 4
 
     @utils.ClassProperty
     def class_id(cls):
         return cls.__qualname__
     
     @classmethod
-    def _add_event_callback(cls, event_name, callback):
+    def add_event_callback(cls, event_name, callback):
         callbacks = cls._event_callbacks[event_name]
         if callback not in callbacks:
             callbacks.append(callback)
@@ -40,6 +44,6 @@ class Skill(metaclass=_SkillMeta):
     def event(cls, *event_names):
         def decorator(callback):
             for event_name in event_names:
-                cls._add_event_callback(event_name, callback)
+                cls.add_event_callback(event_name, callback)
             return callback
         return decorator
