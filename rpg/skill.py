@@ -2,11 +2,21 @@ import collections
 import utils
 
 
+def callback(event_name):
+    def decorator(callback):
+        callback._event = event_name
+        return callback
+    return decorator
+
+
 class _SkillMeta(type):
 
     def __init__(cls, name, bases, attrs):
         super().__init__(name, bases, attrs)
         cls._event_callbacks = collections.defaultdict(list)
+        for method in attrs.values():
+            if hasattr(method, '_event'):
+                cls._event_callbacks[method._event].append(method)
 
 
 class Skill(metaclass=_SkillMeta):
@@ -24,20 +34,6 @@ class Skill(metaclass=_SkillMeta):
         return cls.__doc__
 
     max_level = None
-    
-    @classmethod
-    def add_event_callback(cls, event_name, callback):
-        callbacks = cls._event_callbacks[event_name]
-        if callback not in callbacks:
-            callbacks.append(callback)
-
-    @classmethod
-    def event(cls, *event_names):
-        def decorator(callback):
-            for event_name in event_names:
-                cls.add_event_callback(event_name, callback)
-            return callback
-        return decorator
 
     def __init__(self, level=0):
         self.level = level
