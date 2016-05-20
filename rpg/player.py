@@ -1,7 +1,7 @@
 import easyplayer
 
 
-class Player(easyplayer.EasyPlayer):
+class Player(easyplayer.Player):
 
     def __init__(self, index):
         super().__init__(index)
