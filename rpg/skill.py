@@ -27,7 +27,7 @@ class Skill(metaclass=_SkillMeta):
 
     @utils.ClassProperty
     def name(cls):
-        return cls.__name__.replace(' ', '')
+        return cls.__name__.replace('_', ' ')
 
     @utils.ClassProperty
     def description(cls):
