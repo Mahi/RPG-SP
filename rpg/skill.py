@@ -38,9 +38,11 @@ class Skill(metaclass=_SkillMeta):
     def __init__(self, level=0):
         self.level = level
 
+    @property
     def upgrade_cost(self):
         return (self.level + 1) * 5
 
+    @property
     def downgrade_refund(self):
         return self.level * 4
 
