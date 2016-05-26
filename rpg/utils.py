@@ -6,7 +6,7 @@ class ClassProperty:
 
     Although it is possible to create a plain class property and
     set the :attr:`fget` manually later on, it's usually easier to
-    use :cls:`ClassProperty` as a decorator:
+    use :class:`ClassProperty` as a decorator:
 
     .. code-block:: python
 
