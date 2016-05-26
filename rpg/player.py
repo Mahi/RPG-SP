@@ -3,12 +3,12 @@ import easyplayer
 
 class Player(easyplayer.Player):
 
-    def __init__(self, index):
+    def __init__(self, index, level=0, xp=0, credits=0, skills=None):
         super().__init__(index)
-        self._level = 0
-        self._xp = 0
-        self._credits = 0
-        self.skills = []
+        self._level = level
+        self._xp = xp
+        self._credits = credits
+        self.skills = skills if skills is not None else []
 
     @property
     def level(self):
