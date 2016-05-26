@@ -1,9 +1,11 @@
+import collections
+
 import utils
 
 
-def callback(event_name):
+def callback(*event_names):
     def decorator(callback):
-        callback._event = event_name
+        callback._events = event_names
         return callback
     return decorator
 
@@ -12,11 +14,12 @@ class _SkillMeta(type):
 
     def __init__(cls, name, bases, attrs):
         super().__init__(name, bases, attrs)
-        cls._event_callbacks = {
-            method._event: method
-            for method in attrs.values()
-            if hasattr(method, '_event')
-        }
+        cls._event_callbacks = collections.defaultdict(list)
+        for f in attrs.values():
+            if not hasattr(f, '_event'):
+                continue
+            for event_name in f._events:
+                cls._event_callbacks[event_name] = f
 
 
 class Skill(metaclass=_SkillMeta):
