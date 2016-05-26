@@ -19,7 +19,7 @@ class Player(easyplayer.Player):
         return self._credits
 
     @property
-    def required_xp_to_level_up(self):
+    def required_xp(self):
         return 300 + 15 * self.level
 
     @property
@@ -30,8 +30,8 @@ class Player(easyplayer.Player):
         if amount < 0:
             raise ValueError('Negative value passed for give_xp()')
         self._xp += amount
-        while self.xp > self.required_xp_to_level_up:
-            self._xp -= self.required_xp_to_level_up
+        while self.xp > self.required_xp:
+            self._xp -= self.required_xp
             self._level += 1
             self._credits += 5
 
