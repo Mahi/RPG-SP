@@ -10,49 +10,30 @@ class Player(easyplayer.Player):
         self._credits = 0
         self.skills = []
 
-    @staticmethod
-    def xp_to_level_up(level):
-        return 300 + 15 * level
-
-    @property
-    def required_xp(self):
-        return Player.xp_to_level_up(self.level)
-
     @property
     def level(self):
         return self._level
 
-    @level.setter
-    def level(self, value):
-        if value < self.level:
-            raise ValueError("No support for removing levels.")
-        self._credits += (value - self.level) * 5
-        self._level = value
+    @property
+    def credits(self):
+        return self._credits
+
+    @property
+    def required_xp_to_level_up(self):
+        return 300 + 15 * self.level
 
     @property
     def xp(self):
         return self._xp
 
-    @xp.setter
-    def xp(self, value):
-        if value < self.xp:
-            raise ValueError("No support for removing XP.")
-        self._xp = value
-        self._sync_level_to_xp()
-
-    def _sync_level_to_xp(self):
-        levels = 0
-        while True:
-            required_xp = Player.xp_to_level_up(self.level + levels)
-            if required_xp > self.xp:
-                break
-            self._xp -= required_xp
-            levels += 1
-        self.level += levels
-
-    @property
-    def credits(self):
-        return self._credits
+    def give_xp(self, amount):
+        if amount < 0:
+            raise ValueError('Negative value passed for give_xp()')
+        self._xp += amount
+        while self.xp > self.required_xp_to_level_up:
+            self._xp -= self.required_xp_to_level_up
+            self._level += 1
+            self._credits += 5
 
     def reset_rpg_progress(self):
         self._level = 0
