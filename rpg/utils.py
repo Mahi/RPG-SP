@@ -35,14 +35,16 @@ class ClassProperty:
         Accessed through the subclass: My Subclass
     """
 
-    def __init__(self, fget=None):
+    def __init__(self, fget=None, doc=None):
         """Initialize the class property with a function.
 
         :param callable|None fget:
             Function to call when the property is accessed
         """
+        if doc is None and fget is not None:
+            doc = fget.__doc__
         self.fget = fget
-
+        self.__doc__ = doc
 
     def __get__(self, obj, type_):
         """Call the :attr:`fget` when the class property is accessed.
