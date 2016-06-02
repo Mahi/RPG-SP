@@ -11,6 +11,7 @@ class Database:
             Path to the database file or ``':memory:'`` for RAM
         """
         self._connection = sqlite3.connect(path)
+        self._connection.row_factory = sqlite3.Row
         self._connection.execute('''
             CREATE TABLE IF NOT EXISTS players (
                 steamid TEXT PRIMARY KEY NOT NULL,
