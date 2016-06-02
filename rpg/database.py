@@ -35,3 +35,15 @@ class Database:
         """Commit changes to the database."""
         self._connection.commit()
 
+    def __enter__(self):
+        """Enter method to allow usage with ``with`` statement.
+
+        :returns Database:
+            The database object itself
+        """
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        """Commit changes and close the database safely."""
+        self.commit()
+        self.close()
