@@ -48,6 +48,22 @@ class Database:
             'INSERT OR REPLACE INTO skills VALUES (?, ?, ?)',
             (steamid, class_id, level))
 
+    def load_player_data(self, steamid):
+        """Load player's data from the database."""
+        for row in self._connection.execute(
+                'SELECT level, xp, credits FROM players WHERE steamid=?',
+                (steamid,)):
+            return row
+        return None
+
+    def load_skill_data(self, steamid, class_id):
+        """Load skill's data from the database."""
+        for row in self._connection.execute(
+                'SELECT level FROM skills WHERE steamid=? AND class_id=?',
+                (steamid, class_id)):
+            return row
+        return None
+
     def __enter__(self):
         """Enter method to allow usage with ``with`` statement.
 
