@@ -31,3 +31,7 @@ class Database:
         """Close the connection to the database."""
         self._connection.close()
 
+    def commit(self):
+        """Commit changes to the database."""
+        self._connection.commit()
+
