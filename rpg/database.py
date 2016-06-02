@@ -35,6 +35,18 @@ class Database:
         """Commit changes to the database."""
         self._connection.commit()
 
+    def save_player_data(self, steamid, level, xp, credits):
+        """Save player's data into the database."""
+        self._connection.execute(
+            'INSERT OR REPLACE INTO players VALUES (?, ?, ?, ?)',
+            (steamid, level, xp, credits))
+
+    def save_skill_data(self, steamid, class_id, level):
+        """Save skill's data into the database."""
+        self._connection.execute(
+            'INSERT OR REPLACE INTO skills VALUES (?, ?, ?)',
+            (steamid, class_id, level))
+
     def __enter__(self):
         """Enter method to allow usage with ``with`` statement.
 
