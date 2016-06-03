@@ -1,6 +1,6 @@
-from skill import callback, Skill
-
 from listeners.tick import TickRepeat
+
+from rpg.skill import callback, Skill
 
 
 class Health(Skill):

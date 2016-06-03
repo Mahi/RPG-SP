@@ -1,6 +1,6 @@
 import collections
 
-import utils
+import rpg.utils
 
 
 def callback(*event_names):
@@ -68,7 +68,7 @@ class Skill(metaclass=_SkillMeta):
                 player.health += self.level * 25
     """
 
-    @utils.ClassProperty
+    @rpg.utils.ClassProperty
     def class_id(cls):
         """Unique class ID for the skill class.
 
@@ -77,7 +77,7 @@ class Skill(metaclass=_SkillMeta):
         """
         return cls.__qualname__
 
-    @utils.ClassProperty
+    @rpg.utils.ClassProperty
     def name(cls):
         """Name of the skill.
 
@@ -88,7 +88,7 @@ class Skill(metaclass=_SkillMeta):
         """
         return cls.__name__.replace('_', ' ')
 
-    @utils.ClassProperty
+    @rpg.utils.ClassProperty
     def description(cls):
         """A short description of the skill.
 
