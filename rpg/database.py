@@ -49,20 +49,28 @@ class Database:
             (steamid, class_id, level))
 
     def load_player_data(self, steamid):
-        """Load player's data from the database."""
+        """Load player's data from the database.
+
+        :returns tuple:
+            Player's level, xp, and credits or ``(0, 0, 0)`` by default
+        """
         for row in self._connection.execute(
                 'SELECT level, xp, credits FROM players WHERE steamid=?',
                 (steamid,)):
             return row
-        return None
+        return 0, 0, 0
 
     def load_skill_data(self, steamid, class_id):
-        """Load skill's data from the database."""
+        """Load skill's data from the database.
+
+        :returns tuple:
+            Skill's level or ``(0,)`` by default
+        """
         for row in self._connection.execute(
                 'SELECT level FROM skills WHERE steamid=? AND class_id=?',
                 (steamid, class_id)):
             return row
-        return None
+        return 0,
 
     def __enter__(self):
         """Enter method to allow usage with ``with`` statement.
