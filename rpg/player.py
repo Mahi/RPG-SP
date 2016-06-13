@@ -56,7 +56,8 @@ class Player(easyplayer.Player):
             If the provided amount is negative
         """
         if amount < 0:
-            raise ValueError('Negative value passed for give_xp()')
+            raise ValueError(
+                "Negative value '{0}' passed for give_xp()".format(amount))
         self._xp += amount
         while self.xp > self.required_xp:
             self._xp -= self.required_xp
@@ -85,7 +86,8 @@ class Player(easyplayer.Player):
             If the skill is not in player's skills
         """
         if skill not in self.skills:
-            raise ValueError('Skill {0} not in player\'s skills'.format(skill))
+            raise ValueError(
+                "Skill '{0}'' not in player's skills".format(skill))
         if self.credits < skill.upgrade_cost:
             return
         skill.level += 1
@@ -102,7 +104,8 @@ class Player(easyplayer.Player):
             If the skill is not in player's skills
         """
         if skill not in self.skills:
-            raise ValueError('Skill {0} not in player\'s skills'.format(skill))
+            raise ValueError(
+                "Skill '{0}'' not in player's skills".format(skill))
         if skill.level <= 0:
             return
         self.credits += skill.downgrade_cost
