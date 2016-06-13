@@ -73,3 +73,37 @@ class Player(easyplayer.Player):
         self._credits = 0
         for skill in self.skills:
             skill.level = 0
+
+    def upgrade_skill(self, skill):
+        """Upgrade the player's skill's level by one.
+
+        Does nothing if the player can't afford upgrading the skill.
+
+        :param rpg.skill.Skill skill:
+            Skill to upgrade
+        :raises ValueError:
+            If the skill is not in player's skills
+        """
+        if skill not in self.skills:
+            raise ValueError('Skill {0} not in player\'s skills'.format(skill))
+        if self.credits < skill.upgrade_cost:
+            return
+        skill.level += 1
+        self.credits -= skill.upgrade_cost
+
+    def downgrade_skill(self, skill):
+        """Downgrade the player's skill's level by one.
+
+        Does nothing if the skill doesn't have any levels.
+
+        :param rpg.skill.Skill skill:
+            Skill to downgrade
+        :raises ValueError:
+            If the skill is not in player's skills
+        """
+        if skill not in self.skills:
+            raise ValueError('Skill {0} not in player\'s skills'.format(skill))
+        if skill.level <= 0:
+            return
+        self.credits += skill.downgrade_cost
+        skill.level -= 1
