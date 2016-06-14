@@ -18,13 +18,13 @@ def _new_player(index):
         The RPG player entity
     """
     player = rpg.player.Player(index)
-    player.skills.extend(skill() for skill in _skills)
+    player.skills.extend(skill() for skill in _skill_classes)
     return player
 
 
 # Globals
 _players = PlayerDictionary(_new_player)
-_skills = list(rpg.utils.get_subclasses(rpg.skill.Skill))
+_skill_classes = list(rpg.utils.get_subclasses(rpg.skill.Skill))
 
 
 @Event('player_jump', 'player_spawn')
