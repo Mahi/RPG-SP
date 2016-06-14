@@ -1,4 +1,4 @@
-from event import Event
+from events import Event
 from paths import PLUGIN_DATA_PATH
 from players.dictionary import PlayerDictionary
 from players.helpers import index_from_userid
