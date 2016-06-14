@@ -110,3 +110,17 @@ class Player(easyplayer.Player):
             return
         self.credits += skill.downgrade_cost
         skill.level -= 1
+
+    def execute_skill_callbacks(self, event_name, **eargs):
+        """Execute each skill's callback with matching event name.
+
+        Makes sure the skill has been leveled before executing it.
+
+        :param str event_name:
+            Name of the event which's callbacks to execute
+        :param dict \*\*event_args:
+            Keyword arguments of the event forwarded to the callbacks
+        """        
+        for skill in self.skills:
+            if skill.level > 0:
+                skill.execute_callback(event_name, **eargs)
