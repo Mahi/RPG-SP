@@ -52,7 +52,7 @@ def unload():
 
 
 @Event('player_disconnect', 'player_spawn')
-def _save_player_data(event):
+def _save_player_data_on_event(event):
     """Save player's RPG data into the database."""
     index = index_from_userid(event['userid'])
     if index not in _players:
