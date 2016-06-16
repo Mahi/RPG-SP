@@ -110,7 +110,7 @@ class Player(easyplayer.Player):
                 "Skill '{0}'' not in player's skills".format(skill))
         if skill.level <= 0:
             return
-        self.credits += skill.downgrade_cost
+        self.credits += skill.downgrade_refund
         skill.level -= 1
 
     def execute_skill_callbacks(self, event_name, **eargs):
