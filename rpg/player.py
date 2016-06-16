@@ -90,6 +90,8 @@ class Player(easyplayer.Player):
                 "Skill '{0}'' not in player's skills".format(skill))
         if self.credits < skill.upgrade_cost:
             return
+        if skill.max_level is not None and skill.level >= skill.max_level:
+            return
         skill.level += 1
         self.credits -= skill.upgrade_cost
 
@@ -120,7 +122,7 @@ class Player(easyplayer.Player):
             Name of the event which's callbacks to execute
         :param dict \*\*event_args:
             Keyword arguments of the event forwarded to the callbacks
-        """        
+        """
         for skill in self.skills:
             if skill.level > 0:
                 skill.execute_callback(event_name, **eargs)
