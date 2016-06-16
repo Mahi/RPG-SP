@@ -5,6 +5,7 @@ from rpg.skill import callback, Skill
 
 class Health(Skill):
     "Gain +25 health for each level on spawn."
+    max_level = 16
 
     @callback('player_spawn')
     def _spawn(self, player, **eargs):
@@ -13,6 +14,7 @@ class Health(Skill):
 
 class Regenerate(Skill):
     "Regenerate +1 health for each level every second."
+    max_level = 5
 
     def __init__(self, level=0):
         super().__init__(level)
