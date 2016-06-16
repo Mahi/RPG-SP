@@ -16,8 +16,8 @@ class Regenerate(Skill):
     "Regenerate +1 health for each level every second."
     max_level = 5
 
-    def __init__(self, level=0):
-        super().__init__(level)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._repeat = TickRepeat(self._tick)
 
     @callback('player_victim')
