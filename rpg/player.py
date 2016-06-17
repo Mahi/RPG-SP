@@ -93,7 +93,7 @@ class Player(easyplayer.Player):
         if skill.max_level is not None and skill.level >= skill.max_level:
             return
         skill.level += 1
-        self.credits -= skill.upgrade_cost
+        self._credits -= skill.upgrade_cost
 
     def downgrade_skill(self, skill):
         """Downgrade the player's skill's level by one.
@@ -110,7 +110,7 @@ class Player(easyplayer.Player):
                 "Skill '{0}'' not in player's skills".format(skill))
         if skill.level <= 0:
             return
-        self.credits += skill.downgrade_refund
+        self._credits += skill.downgrade_refund
         skill.level -= 1
 
     def execute_skill_callbacks(self, event_name, **eargs):
