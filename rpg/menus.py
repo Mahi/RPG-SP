@@ -120,3 +120,23 @@ class DowngradeSkillsMenu(_PagedRpgMenu):
     def _select_callback(self, player_index, choice):
         self.player.downgrade_skill(choice.value)
         return self
+
+
+class StatsMenu(_SimpleRpgMenu):
+    """Menu for showing player's RPG stats."""
+
+    @staticmethod
+    def _build_callback(self, player_index):
+        self.clear()
+        self.extend([
+            Text('Stats'),
+            Text('Credits: {0}'.format(self.player.credits)),
+            Text('Level: {0}'.format(self.player.level)),
+            Text('XP: {0}'.format(self.player.xp)),
+            SimpleOption(7, 'Back', self.parent_menu),
+            SimpleOption(9, 'Close'),
+        ])
+
+    @staticmethod
+    def _select_callback(self, player_index, choice):
+        return choice.value
