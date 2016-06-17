@@ -98,3 +98,17 @@ def _execute_interaction_skill_callbacks(event):
         _event_names[event.name][0], player=attacker, **eargs)
     victim.execute_skill_callbacks(
         _event_names[event.name][1], player=victim, **eargs)
+
+
+@Event('player_death')
+def _give_kill_xp(event):
+    """Give attacker XP from killing the victim."""
+    attacker = _players.from_userid(event['attacker'])
+    attacker.give_xp(50)
+
+
+@Event('player_hurt')
+def _give_hurt_xp(event):
+    """Give attacker XP from hurting the victim."""
+    attacker = _players.from_userid(event['attacker'])
+    attacker.give_xp(10)
