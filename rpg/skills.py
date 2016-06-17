@@ -41,3 +41,12 @@ class Regenerate(Skill):
             if type(skill) == Health:
                 return skill
         return None
+
+
+class Long_Jump(Skill):
+    "Travel much further with your jumps."
+    max_level = 6
+
+    @callback('player_jump')
+    def _jump_further(self, player, **eargs):
+        player.push(1 + 0.25 * self.level, 1)
