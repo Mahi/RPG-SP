@@ -83,7 +83,11 @@ _event_names = {
 
 @Event('player_death', 'player_hurt')
 def _execute_interaction_skill_callbacks(event):
-    """Execute skill callbacks for events with multiple participants."""
+    """Execute skill callbacks for events with multiple participants.
+
+    Takes the game event's name and finds the corresponding
+    attacker and victim event names from the ``_event_names`` dict.
+    """
     eargs = event.variables.as_dict()
     attacker = _players.from_userid(eargs.pop('attacker'))
     victim = _players.from_userid(eargs.pop('userid'))
