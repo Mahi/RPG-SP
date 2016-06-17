@@ -1,3 +1,5 @@
+from commands.client import ClientCommand
+from commands.say import SayCommand
 from events import Event
 from paths import PLUGIN_DATA_PATH
 from players.dictionary import PlayerDictionary
@@ -5,6 +7,7 @@ from players.helpers import index_from_userid
 from players.helpers import playerinfo_from_index
 
 import rpg.database
+import rpg.menus
 import rpg.player
 import rpg.skill
 import rpg.skills
@@ -98,6 +101,14 @@ def _execute_interaction_skill_callbacks(event):
         _event_names[event.name][0], player=attacker, **eargs)
     victim.execute_skill_callbacks(
         _event_names[event.name][1], player=victim, **eargs)
+
+
+@ClientCommand('rpg')
+@SayCommand('rpg')
+def _send_rpg_menu(command, player_index, team_only=None):
+    """Send rpg menu to the player using the command."""
+    menu = rpg.menus.MainMenu(_players[player_index])
+    menu.send(player_index)
 
 
 @Event('player_death')
