@@ -91,11 +91,11 @@ def _execute_interaction_skill_callbacks(event):
     Takes the game event's name and finds the corresponding
     attacker and victim event names from the ``_event_names`` dict.
     """
+    if not event['attacker'] or event['attacker'] == event['userid']:
+        return
     eargs = event.variables.as_dict()
     attacker = _players.from_userid(eargs.pop('attacker'))
     victim = _players.from_userid(eargs.pop('userid'))
-    if attacker is None or attacker == victim:
-        return
     eargs.update(attacker=attacker, victim=victim)
     attacker.execute_skill_callbacks(
         _event_names[event.name][0], player=attacker, **eargs)
@@ -114,6 +114,8 @@ def _send_rpg_menu(command, player_index, team_only=None):
 @Event('player_death')
 def _give_kill_xp(event):
     """Give attacker XP from killing the victim."""
+    if not event['attacker'] or event['attacker'] == event['userid']:
+        return
     attacker = _players.from_userid(event['attacker'])
     attacker.give_xp(50)
 
@@ -121,5 +123,7 @@ def _give_kill_xp(event):
 @Event('player_hurt')
 def _give_hurt_xp(event):
     """Give attacker XP from hurting the victim."""
+    if not event['attacker'] or event['attacker'] == event['userid']:
+        return
     attacker = _players.from_userid(event['attacker'])
     attacker.give_xp(10)
