@@ -1,5 +1,7 @@
 from menus import PagedMenu
 from menus import SimpleMenu
+from menus import SimpleOption
+from menus import Text
 
 
 class _SimpleRpgMenu(SimpleMenu):
@@ -57,3 +59,23 @@ class _PagedRpgMenu(PagedMenu):
             bottom_separator=None,
         )
         self.player = player
+
+
+class MainMenu(_SimpleRpgMenu):
+    """Main RPG menu for navigating the submenus."""
+
+    @staticmethod
+    def _build_callback(self, player_index):
+        self.clear()
+        self.extend([
+            Text('RPG Main Menu'),
+            Text('Credits: {0}'.format(self.player.credits)),
+            SimpleOption(1, 'Upgrade Skills', UpgradeSkillsMenu),
+            SimpleOption(2, 'Downgrade Skills', DowngradeSkillsMenu),
+            SimpleOption(3, 'Stats', StatsMenu),
+            SimpleOption(9, 'Close'),
+        ])
+
+    @staticmethod
+    def _select_callback(self, player_index, choice):
+        return choice.value(self.player, parent_menu=self)
