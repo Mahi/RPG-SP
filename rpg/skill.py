@@ -27,7 +27,7 @@ class _SkillMeta(type):
         super().__init__(name, bases, attrs)
         cls._event_callbacks = collections.defaultdict(list)
         for f in attrs.values():
-            if not hasattr(f, '_event'):
+            if not hasattr(f, '_events'):
                 continue
             for event_name in f._events:
                 cls._event_callbacks[event_name] = f
