@@ -92,8 +92,8 @@ class Player(easyplayer.Player):
             return
         if skill.max_level is not None and skill.level >= skill.max_level:
             return
-        skill.level += 1
         self._credits -= skill.upgrade_cost
+        skill.level += 1
 
     def downgrade_skill(self, skill):
         """Downgrade the player's skill's level by one.
