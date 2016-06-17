@@ -1,4 +1,5 @@
 from menus import PagedMenu
+from menus import PagedOption
 from menus import SimpleMenu
 from menus import SimpleOption
 from menus import Text
@@ -79,3 +80,43 @@ class MainMenu(_SimpleRpgMenu):
     @staticmethod
     def _select_callback(self, player_index, choice):
         return choice.value(self.player, parent_menu=self)
+
+
+class UpgradeSkillsMenu(_PagedRpgMenu):
+    """Menu for upgrading skills."""
+
+    def __init__(self, player, *args, **kwargs):
+        super().__init__(player, *args, **kwargs, title='Upgrade Skills')
+
+    @staticmethod
+    def _build_callback(self, player_index):
+        self.clear()
+        self.description = 'Credits: {0}'.format(self.player.credits)
+        for skill in self.player.skills:
+            text = '{s.name} [{s.level}/{s.max_level}] ({s.upgrade_cost} credits)'.format(s=skill)
+            self.append(PagedOption(text, skill, True, True))
+
+    @staticmethod
+    def _select_callback(self, player_index, choice):
+        self.player.upgrade_skill(choice.value)
+        return self
+
+
+class DowngradeSkillsMenu(_PagedRpgMenu):
+    """Menu for downgrading skills."""
+
+    def __init__(self, player, *args, **kwargs):
+        super().__init__(player, *args, **kwargs, title='Downgrade Skills')
+
+    @staticmethod
+    def _build_callback(self, player_index):
+        self.clear()
+        self.description = 'Credits: {0}'.format(self.player.credits)
+        for skill in self.player.skills:
+            text = '{s.name} [{s.level}/{s.max_level}] ({s.downgrade_refund} credits)'.format(s=skill)
+            self.append(PagedOption(text, skill, True, True))
+
+    @staticmethod
+    def _select_callback(self, player_index, choice):
+        self.player.downgrade_skill(choice.value)
+        return self
