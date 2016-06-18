@@ -117,7 +117,7 @@ class Skill(metaclass=_SkillMeta):
         """Refund for downgrading the skill."""
         return self.level * 4
 
-    def execute_callback(self, event_name, **event_args):
+    def execute_callbacks(self, event_name, **event_args):
         """Execute a callback for event based on its name.
 
         :param str event_name:
