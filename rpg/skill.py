@@ -3,11 +3,11 @@ import collections
 import rpg.utils
 
 
-def callback(*event_names):
-    """Register a callback for events based on their name.
+def event_callback(*event_names):
+    """Register a callback for events based on their names.
 
     :param tuple \*event_names:
-        Names of the events this callback should be called on
+        Names of the events to register the callback for
     """
     def decorator(callback):
         callback._events = event_names
@@ -16,10 +16,10 @@ def callback(*event_names):
 
 
 class _SkillMeta(type):
-    """Metaclass which takes care of registering skills' callbacks.
+    """Metaclass for taking care of skills' event callbacks.
 
-    Creates :attr:`_event_callbacks` dictionary which will have
-    the events' names as keys and the corresponding callbacks as values.
+    Creates :attr:`_event_callbacks` dictionary with the events' names
+    as keys and lists of the corresponding callbacks as values.
     """
 
     def __init__(cls, name, bases, attrs):
@@ -30,7 +30,7 @@ class _SkillMeta(type):
             if not hasattr(f, '_events'):
                 continue
             for event_name in f._events:
-                cls._event_callbacks[event_name] = f
+                cls._event_callbacks[event_name].append(f)
 
 
 class Skill(metaclass=_SkillMeta):
@@ -45,7 +45,7 @@ class Skill(metaclass=_SkillMeta):
       If ``None``, the skill can be leveled infinitely.
 
     Skills also have event callbacks, which are registered using the
-    :func:`callback` function. These callbacks use the skill's
+    :func:`event_callback` function. These callbacks use the skill's
     current level to indicate how strong the effect should be.
 
     Skills are created by subclassing this base class and defining the
@@ -64,7 +64,7 @@ class Skill(metaclass=_SkillMeta):
             max_level = 16
 
             @callback('player_spawn')
-            def _give_health(self, player, **eargs):
+            def _give_health(self, player, **event_args):
                 player.health += self.level * 25
     """
 
@@ -117,7 +117,7 @@ class Skill(metaclass=_SkillMeta):
         """Refund for downgrading the skill."""
         return self.level * 4
 
-    def execute_callback(self, event_name, **event_args):
+    def execute_callbacks(self, event_name, **event_args):
         """Execute a callback for event based on its name.
 
         :param str event_name:
@@ -125,5 +125,7 @@ class Skill(metaclass=_SkillMeta):
         :param dict \*\*event_args:
             Keyword arguments of the event forwarded to the callback
         """
-        if event_name in self._event_callbacks:
-            self._event_callbacks[event_name](self, **event_args)
+        if event_name not in self._event_callbacks:
+            return
+        for callback in self._event_callbacks[event_name]:
+            callback(self, **event_args)

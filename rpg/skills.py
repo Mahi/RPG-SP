@@ -1,6 +1,7 @@
 from listeners.tick import TickRepeat
 
-from rpg.skill import callback, Skill
+from rpg.skill import event_callback
+from rpg.skill import Skill
 
 
 class Health(Skill):
@@ -11,8 +12,8 @@ class Health(Skill):
     def bonus_health(self):
         return self.level * 25
 
-    @callback('player_spawn')
-    def _give_bonus_health(self, player, **eargs):
+    @event_callback('player_spawn')
+    def _give_bonus_health(self, player, **event_args):
         player.health += self.bonus_health
 
 
@@ -30,17 +31,17 @@ class Regenerate(Skill):
         if player.health >= max_health:
             self._repeat.stop()
 
-    @callback('player_victim', 'player_upgrade_skill')
-    def _start_repeat(self, player, **eargs):
+    @event_callback('player_victim', 'player_upgrade_skill')
+    def _start_repeat(self, player, **event_args):
         self._repeat.args = (player, player.find_skill(Health.class_id))
         self._repeat.start(1, 0)
 
-    @callback('player_death')
-    def _stop_repeat(self, **eargs):
+    @event_callback('player_death')
+    def _stop_repeat(self, **event_args):
         self._repeat.stop()
 
-    @callback('player_downgrade_skill')
-    def _stop_repeat_if_fully_downgraded(self, skill, **eargs):
+    @event_callback('player_downgrade_skill')
+    def _stop_repeat_if_fully_downgraded(self, skill, **event_args):
         if skill == self and skill.level <= 0:
             self._repeat.stop()
 
@@ -53,6 +54,6 @@ class Long_Jump(Skill):
     def jump_multiplier(self):
         return 1 + 0.05 * self.level
 
-    @callback('player_jump')
-    def _jump_further(self, player, **eargs):
+    @event_callback('player_jump')
+    def _jump_further(self, player, **event_args):
         player.push(self.jump_multiplier, 1)
