@@ -1,4 +1,5 @@
 import collections
+import itertools
 
 import rpg.utils
 
@@ -22,9 +23,12 @@ class _SkillMeta(type):
     as keys and lists of the corresponding callbacks as values.
     """
 
+    _order_index_generator = itertools.count(0)
+
     def __init__(cls, name, bases, attrs):
         """Register event callbacks upon class's initialization."""
         super().__init__(name, bases, attrs)
+        cls.order_index = next(_SkillMeta._order_index_generator)
         cls._event_callbacks = collections.defaultdict(list)
         for f in attrs.values():
             if not hasattr(f, '_events'):

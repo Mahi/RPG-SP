@@ -1,3 +1,5 @@
+import operator
+
 from commands.client import ClientCommand
 from commands.say import SayCommand
 from events import Event
@@ -36,7 +38,9 @@ def _new_player(index):
 # Globals
 _database = rpg.database.Database(PLUGIN_DATA_PATH / 'rpg.db')
 _players = PlayerDictionary(_new_player)
-_skill_classes = list(rpg.utils.get_subclasses(rpg.skill.Skill))
+_skill_classes = sorted(
+    rpg.utils.get_subclasses(rpg.skill.Skill),
+    key=operator.attrgetter('order_index'))
 
 
 def _save_player_data(player):
