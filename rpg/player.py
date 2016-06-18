@@ -125,4 +125,4 @@ class Player(easyplayer.Player):
         """
         for skill in self.skills:
             if skill.level > 0:
-                skill.execute_callback(event_name, **eargs)
+                skill.execute_callback(event_name, player=self, **eargs)

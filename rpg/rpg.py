@@ -75,7 +75,7 @@ def _execute_independent_skill_callbacks(event):
     player = _players.from_userid(eargs.pop('userid'))
     if player.team not in (2, 3):
         return
-    player.execute_skill_callbacks(event.name, player=player, **eargs)
+    player.execute_skill_callbacks(event.name, **eargs)
 
 
 _event_names = {
@@ -97,10 +97,8 @@ def _execute_interaction_skill_callbacks(event):
     attacker = _players.from_userid(eargs.pop('attacker'))
     victim = _players.from_userid(eargs.pop('userid'))
     eargs.update(attacker=attacker, victim=victim)
-    attacker.execute_skill_callbacks(
-        _event_names[event.name][0], player=attacker, **eargs)
-    victim.execute_skill_callbacks(
-        _event_names[event.name][1], player=victim, **eargs)
+    attacker.execute_skill_callbacks(_event_names[event.name][0], **eargs)
+    victim.execute_skill_callbacks(_event_names[event.name][1], **eargs)
 
 
 @ClientCommand('rpg')
