@@ -26,7 +26,7 @@ class Regenerate(Skill):
 
     @callback('player_victim')
     def _start_repeat(self, player, **eargs):
-        self._repeat.args = (player, self._find_health_skill(player))
+        self._repeat.args = (player, player.find_skill(Health.class_id))
         self._repeat.start(1, 0)
 
     @callback('player_death')
