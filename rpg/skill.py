@@ -3,7 +3,7 @@ import collections
 import rpg.utils
 
 
-def callback(*event_names):
+def event_callback(*event_names):
     """Register a callback for events based on their names.
 
     :param tuple \*event_names:
@@ -45,7 +45,7 @@ class Skill(metaclass=_SkillMeta):
       If ``None``, the skill can be leveled infinitely.
 
     Skills also have event callbacks, which are registered using the
-    :func:`callback` function. These callbacks use the skill's
+    :func:`event_callback` function. These callbacks use the skill's
     current level to indicate how strong the effect should be.
 
     Skills are created by subclassing this base class and defining the
