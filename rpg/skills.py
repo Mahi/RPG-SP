@@ -24,7 +24,7 @@ class Regenerate(Skill):
         super().__init__(*args, **kwargs)
         self._repeat = TickRepeat(self._tick)
 
-    @callback('player_victim')
+    @callback('player_victim', 'player_upgrade_skill')
     def _start_repeat(self, player, **eargs):
         self._repeat.args = (player, player.find_skill(Health.class_id))
         self._repeat.start(1, 0)
