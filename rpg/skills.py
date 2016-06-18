@@ -33,6 +33,11 @@ class Regenerate(Skill):
     def _stop_repeat(self, **eargs):
         self._repeat.stop()
 
+    @callback('player_downgrade_skill')
+    def _stop_repeat_if_fully_downgraded(self, skill, **eargs):
+        if skill == self and skill.level <= 0:
+            self._repeat.stop()
+
     def _tick(self, player, health_skill):
         health_bonus = health_skill.level * 25 if health_skill else 0
         player.health = min(player.health + self.level, 100 + health_bonus)
