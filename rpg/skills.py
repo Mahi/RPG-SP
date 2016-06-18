@@ -24,6 +24,12 @@ class Regenerate(Skill):
         super().__init__(*args, **kwargs)
         self._repeat = TickRepeat(self._tick)
 
+    def _tick(self, player, health_skill):
+        max_health = 100 + health_skill.health_bonus
+        player.health = min(player.health + self.level, max_health)
+        if player.health >= max_health:
+            self._repeat.stop()
+
     @callback('player_victim', 'player_upgrade_skill')
     def _start_repeat(self, player, **eargs):
         self._repeat.args = (player, player.find_skill(Health.class_id))
@@ -38,21 +44,15 @@ class Regenerate(Skill):
         if skill == self and skill.level <= 0:
             self._repeat.stop()
 
-    def _tick(self, player, health_skill):
-        max_health = 100 + health_skill.health_bonus
-        player.health = min(player.health + self.level, max_health)
-        if player.health >= max_health:
-            self._repeat.stop()
-
 
 class Long_Jump(Skill):
     "Travel much further with your jumps."
     max_level = 6
 
-    @callback('player_jump')
-    def _jump_further(self, player, **eargs):
-        player.push(self.jump_multiplier, 1)
-
     @property
     def jump_multiplier(self):
         return 1 + 0.25 * self.level
+
+    @callback('player_jump')
+    def _jump_further(self, player, **eargs):
+        player.push(self.jump_multiplier, 1)
