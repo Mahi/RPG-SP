@@ -66,4 +66,7 @@ class Long_Jump(Skill):
 
     @event_callback('player_jump')
     def _jump_further(self, player, **event_args):
-        player.push(self.jump_multiplier, 1)
+        velocity = player.velocity
+        velocity.x *= self.jump_multiplier
+        velocity.y *= self.jump_multiplier
+        player.base_velocity = velocity
