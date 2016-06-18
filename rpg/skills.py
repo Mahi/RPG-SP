@@ -12,6 +12,16 @@ class Health(Skill):
     def bonus_health(self):
         return self.level * 25
 
+    @event_callback('player_upgrade_skill')
+    def _give_level_bonus(self, player, skill, **event_args):
+        if skill == self:
+            player.health += 25
+
+    @event_callback('player_downgrade_skill')
+    def _take_level_bonus(self, player, skill, **event_args):
+        if skill == self and player.health > 100 + self.bonus_health:
+            player.health = 100 + self.bonus_health
+
     @event_callback('player_spawn')
     def _give_bonus_health(self, player, **event_args):
         player.health += self.bonus_health
