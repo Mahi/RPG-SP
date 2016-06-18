@@ -94,6 +94,7 @@ class Player(easyplayer.Player):
             return
         self._credits -= skill.upgrade_cost
         skill.level += 1
+        self.execute_skill_callbacks('player_upgrade_skill', skill=skill)
 
     def downgrade_skill(self, skill):
         """Downgrade the player's skill's level by one.
@@ -112,6 +113,7 @@ class Player(easyplayer.Player):
             return
         self._credits += skill.downgrade_refund
         skill.level -= 1
+        self.execute_skill_callbacks('player_downgrade_skill', skill=skill)
 
     def execute_skill_callbacks(self, event_name, **eargs):
         """Execute each skill's callback with matching event name.
