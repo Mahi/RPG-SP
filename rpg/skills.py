@@ -51,7 +51,7 @@ class Long_Jump(Skill):
 
     @property
     def jump_multiplier(self):
-        return 1 + 0.25 * self.level
+        return 1 + 0.05 * self.level
 
     @callback('player_jump')
     def _jump_further(self, player, **eargs):
