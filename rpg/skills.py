@@ -70,3 +70,18 @@ class Long_Jump(Skill):
         velocity.x *= self.jump_multiplier
         velocity.y *= self.jump_multiplier
         player.base_velocity = velocity
+
+
+class Lifesteal(Skill):
+    "Steal health from enemies upon damaging them."
+    max_level = 5
+
+    def get_steal_amount(self, damage_dealt):
+        return min(damage_dealt * self.level // 10, 10 * self.level)
+
+    @event_callback('player_attack')
+    def _grant_health(self, player, dmg_health, **eargs):
+        health_skill = player.find_skill(Health.class_id)
+        new_health = player.health + self.get_steal_amount(dmg_health)
+        max_health = 100 + health_skill.bonus_health
+        player.health = min(new_health, max_health)
