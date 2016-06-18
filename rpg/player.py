@@ -128,3 +128,14 @@ class Player(easyplayer.Player):
         for skill in self.skills:
             if skill.level > 0:
                 skill.execute_callback(event_name, player=self, **eargs)
+
+    def find_skill(self, skill_id):
+        """Find skill with matching ``class_id``.
+
+        :param str skill_id:
+            ``class_id`` to match for
+        """
+        for skill in self.skills:
+            if skill.class_id == skill_id:
+                return skill
+        return None
