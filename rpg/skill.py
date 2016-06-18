@@ -4,10 +4,10 @@ import rpg.utils
 
 
 def callback(*event_names):
-    """Register a callback for events based on their name.
+    """Register a callback for events based on their names.
 
     :param tuple \*event_names:
-        Names of the events this callback should be called on
+        Names of the events to register the callback for
     """
     def decorator(callback):
         callback._events = event_names
@@ -16,10 +16,10 @@ def callback(*event_names):
 
 
 class _SkillMeta(type):
-    """Metaclass which takes care of registering skills' callbacks.
+    """Metaclass for taking care of skills' event callbacks.
 
-    Creates :attr:`_event_callbacks` dictionary which will have
-    the events' names as keys and the corresponding callbacks as values.
+    Creates :attr:`_event_callbacks` dictionary with the events' names
+    as keys and lists of the corresponding callbacks as values.
     """
 
     def __init__(cls, name, bases, attrs):
