@@ -71,11 +71,11 @@ def _execute_independent_skill_callbacks(event):
     Also makes sure the player is in a valid team to prevent
     accidental errors with spectators and unassigned players.
     """
-    eargs = event.variables.as_dict()
-    player = _players.from_userid(eargs.pop('userid'))
+    event_args = event.variables.as_dict()
+    player = _players.from_userid(event_args.pop('userid'))
     if player.team not in (2, 3):
         return
-    player.execute_skill_callbacks(event.name, **eargs)
+    player.execute_skill_callbacks(event.name, **event_args)
 
 
 _event_names = {
@@ -93,12 +93,12 @@ def _execute_interaction_skill_callbacks(event):
     """
     if not event['attacker'] or event['attacker'] == event['userid']:
         return
-    eargs = event.variables.as_dict()
-    attacker = _players.from_userid(eargs.pop('attacker'))
-    victim = _players.from_userid(eargs.pop('userid'))
-    eargs.update(attacker=attacker, victim=victim)
-    attacker.execute_skill_callbacks(_event_names[event.name][0], **eargs)
-    victim.execute_skill_callbacks(_event_names[event.name][1], **eargs)
+    event_args = event.variables.as_dict()
+    attacker = _players.from_userid(event_args.pop('attacker'))
+    victim = _players.from_userid(event_args.pop('userid'))
+    event_args.update(attacker=attacker, victim=victim)
+    attacker.execute_skill_callbacks(_event_names[event.name][0], **event_args)
+    victim.execute_skill_callbacks(_event_names[event.name][1], **event_args)
 
 
 @ClientCommand('rpg')

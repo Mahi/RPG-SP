@@ -115,7 +115,7 @@ class Player(easyplayer.Player):
         skill.level -= 1
         self.execute_skill_callbacks('player_downgrade_skill', skill=skill)
 
-    def execute_skill_callbacks(self, event_name, **eargs):
+    def execute_skill_callbacks(self, event_name, **event_args):
         """Execute each skill's callback with matching event name.
 
         Makes sure the skill has been leveled before executing it.
@@ -127,7 +127,7 @@ class Player(easyplayer.Player):
         """
         for skill in self.skills:
             if skill.level > 0:
-                skill.execute_callback(event_name, player=self, **eargs)
+                skill.execute_callbacks(event_name, player=self, **event_args)
 
     def find_skill(self, skill_id):
         """Find skill with matching ``class_id``.

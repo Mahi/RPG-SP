@@ -64,7 +64,7 @@ class Skill(metaclass=_SkillMeta):
             max_level = 16
 
             @callback('player_spawn')
-            def _give_health(self, player, **eargs):
+            def _give_health(self, player, **event_args):
                 player.health += self.level * 25
     """
 

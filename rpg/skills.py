@@ -12,7 +12,7 @@ class Health(Skill):
         return self.level * 25
 
     @callback('player_spawn')
-    def _give_bonus_health(self, player, **eargs):
+    def _give_bonus_health(self, player, **event_args):
         player.health += self.bonus_health
 
 
@@ -31,16 +31,16 @@ class Regenerate(Skill):
             self._repeat.stop()
 
     @callback('player_victim', 'player_upgrade_skill')
-    def _start_repeat(self, player, **eargs):
+    def _start_repeat(self, player, **event_args):
         self._repeat.args = (player, player.find_skill(Health.class_id))
         self._repeat.start(1, 0)
 
     @callback('player_death')
-    def _stop_repeat(self, **eargs):
+    def _stop_repeat(self, **event_args):
         self._repeat.stop()
 
     @callback('player_downgrade_skill')
-    def _stop_repeat_if_fully_downgraded(self, skill, **eargs):
+    def _stop_repeat_if_fully_downgraded(self, skill, **event_args):
         if skill == self and skill.level <= 0:
             self._repeat.stop()
 
@@ -54,5 +54,5 @@ class Long_Jump(Skill):
         return 1 + 0.05 * self.level
 
     @callback('player_jump')
-    def _jump_further(self, player, **eargs):
+    def _jump_further(self, player, **event_args):
         player.push(self.jump_multiplier, 1)
