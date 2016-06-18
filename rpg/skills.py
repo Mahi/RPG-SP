@@ -39,9 +39,9 @@ class Regenerate(Skill):
             self._repeat.stop()
 
     def _tick(self, player, health_skill):
-        health_bonus = health_skill.level * 25 if health_skill else 0
-        player.health = min(player.health + self.level, 100 + health_bonus)
-        if player.health >= 100 + health_bonus:
+        max_health = 100 + health_skill.health_bonus
+        player.health = min(player.health + self.level, max_health)
+        if player.health >= max_health:
             self._repeat.stop()
 
 
