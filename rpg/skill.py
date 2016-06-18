@@ -30,7 +30,7 @@ class _SkillMeta(type):
             if not hasattr(f, '_events'):
                 continue
             for event_name in f._events:
-                cls._event_callbacks[event_name] = f
+                cls._event_callbacks[event_name].append(f)
 
 
 class Skill(metaclass=_SkillMeta):
@@ -125,5 +125,7 @@ class Skill(metaclass=_SkillMeta):
         :param dict \*\*event_args:
             Keyword arguments of the event forwarded to the callback
         """
-        if event_name in self._event_callbacks:
-            self._event_callbacks[event_name](self, **event_args)
+        if event_name not in self._event_callbacks:
+            return
+        for callback in self._event_callbacks[event_name]:
+            callback(self, **event_args)
