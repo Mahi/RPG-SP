@@ -2,8 +2,14 @@ from listeners.tick import TickRepeat
 
 from rpg.skill import event_callback
 from rpg.skill import Skill
+from rpg.utils import DecoratorAppendList
 
 
+# Global list for storing all the skills to be used by the plugin
+skills = DecoratorAppendList()
+
+
+@skills.append
 class Health(Skill):
     "Gain +25 health for each level on spawn."
     max_level = 16
@@ -27,6 +33,7 @@ class Health(Skill):
         player.health += self.bonus_health
 
 
+@skills.append
 class Regeneration(Skill):
     "Regenerate +1 health for each level every second."
     max_level = 5
@@ -56,6 +63,7 @@ class Regeneration(Skill):
             self._repeat.stop()
 
 
+@skills.append
 class Long_Jump(Skill):
     "Travel much further with your jumps."
     max_level = 6
@@ -72,6 +80,7 @@ class Long_Jump(Skill):
         player.base_velocity = velocity
 
 
+@skills.append
 class Lifesteal(Skill):
     "Steal health from enemies upon damaging them."
     max_level = 5
