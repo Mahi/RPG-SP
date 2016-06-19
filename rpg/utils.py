@@ -56,18 +56,21 @@ class ClassProperty:
         """
         if type_ is None and obj is not None:
             type_ = type(obj)
-        return self.fget(type_) 
+        return self.fget(type_)
 
 
-def get_subclasses(cls):
-    """Get a flat generator of a class's subclasses.
+class DecoratorAppendList(list):
+    """List which allows ``append`` to be used as a decorator."""
 
-    Yields each subclass recursively (meaning that children get priority
-    over siblings in the order of the yielding).
+    def append(self, item):
+        """Append an item to the list.
 
-    :param type cls:
-        Class whose subclasses to get
-    """
-    for subcls in cls.__subclasses__():
-        yield subcls
-        yield from get_subclasses(subcls)
+        Returns the item so can be used as a decorator.
+
+        :param object item:
+            Item to append to the list
+        :returns object:
+            The appended item
+        """
+        super().append(item)
+        return item

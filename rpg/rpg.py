@@ -11,9 +11,7 @@ from players.helpers import playerinfo_from_index
 import rpg.database
 import rpg.menus
 import rpg.player
-import rpg.skill
 import rpg.skills
-import rpg.utils
 
 
 def _new_player(index):
@@ -29,7 +27,7 @@ def _new_player(index):
     steamid = playerinfo_from_index(index).steamid
     player_data = _database.load_player_data(steamid)
     player = rpg.player.Player(index, *player_data)
-    for skill_cls in _skill_classes:
+    for skill_cls in rpg.skills.skills:
         skill_data = _database.load_skill_data(steamid, skill_cls.class_id)
         player.skills.append(skill_cls(*skill_data))
     return player
@@ -38,9 +36,6 @@ def _new_player(index):
 # Globals
 _database = rpg.database.Database(PLUGIN_DATA_PATH / 'rpg.db')
 _players = PlayerDictionary(_new_player)
-_skill_classes = sorted(
-    rpg.utils.get_subclasses(rpg.skill.Skill),
-    key=operator.attrgetter('order_index'))
 
 
 def _save_player_data(player):
