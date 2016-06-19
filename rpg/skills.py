@@ -9,7 +9,7 @@ skills = DecoratorAppendList()
 
 
 @skills.append
-class Health(Skill):
+class Bonus_Health(Skill):
     "Gain +25 health for each level on spawn."
     max_level = 16
 
@@ -45,7 +45,7 @@ class Health_Regeneration(TickRepeatSkill):
 
     @event_callback('player_victim', 'player_upgrade_skill')
     def _start_repeat(self, player, **event_args):
-        self.tick_repeat.args = (player, player.find_skill(Health.class_id))
+        self.tick_repeat.args = (player, player.find_skill(Bonus_Health.class_id))
         self.tick_repeat.start(1, 0)
 
     @event_callback('player_death')
