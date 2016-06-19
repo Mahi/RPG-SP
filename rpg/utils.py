@@ -56,21 +56,7 @@ class ClassProperty:
         """
         if type_ is None and obj is not None:
             type_ = type(obj)
-        return self.fget(type_) 
-
-
-def get_subclasses(cls):
-    """Get a flat generator of a class's subclasses.
-
-    Yields each subclass recursively (meaning that children get priority
-    over siblings in the order of the yielding).
-
-    :param type cls:
-        Class whose subclasses to get
-    """
-    for subcls in cls.__subclasses__():
-        yield subcls
-        yield from get_subclasses(subcls)
+        return self.fget(type_)
 
 
 class DecoratorAppendList(list):
