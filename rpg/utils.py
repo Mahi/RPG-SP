@@ -71,3 +71,20 @@ def get_subclasses(cls):
     for subcls in cls.__subclasses__():
         yield subcls
         yield from get_subclasses(subcls)
+
+
+class DecoratorAppendList(list):
+    """List which allows ``append`` to be used as a decorator."""
+
+    def append(self, item):
+        """Append an item to the list.
+
+        Returns the item so can be used as a decorator.
+
+        :param object item:
+            Item to append to the list
+        :returns object:
+            The appended item
+        """
+        super().append(item)
+        return item
