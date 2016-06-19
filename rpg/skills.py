@@ -1,7 +1,6 @@
-from listeners.tick import TickRepeat
-
 from rpg.skill import event_callback
 from rpg.skill import Skill
+from rpg.skill import TickRepeatSkill
 from rpg.utils import DecoratorAppendList
 
 
@@ -34,13 +33,9 @@ class Health(Skill):
 
 
 @skills.append
-class Regeneration(Skill):
+class Regeneration(TickRepeatSkill):
     "Regenerate +1 health for each level every second."
     max_level = 5
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._repeat = TickRepeat(self._tick)
 
     def _tick(self, player, health_skill):
         max_health = 100 + health_skill.bonus_health

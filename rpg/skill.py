@@ -1,5 +1,7 @@
 import collections
 
+from listeners.tick import TickRepeat
+
 import rpg.utils
 
 
@@ -129,3 +131,25 @@ class Skill(metaclass=_SkillMeta):
             return
         for callback in self._event_callbacks[event_name]:
             callback(self, **event_args)
+
+
+class TickRepeatSkill(Skill):
+    """Base class for skills that need to use tick repeat.
+
+    Adds a :attr:`tick_repeat` attribute linked to the abstract
+    :meth:`_tick` method.
+    """
+
+    def __init__(self, level=0):
+        """Initialize the skill.
+
+        :param int level:
+            Initial level for the skill
+        """
+        super().__init__(level)
+        self.tick_repeat = TickRepeat(self._tick)
+
+    def _tick(self, *args, **kwargs):
+        """Callback for the :attr:`tick_repeat` attribute."""
+        raise NotImplementedError(
+            "_tick method not implemented by a TickRepeatSkill class.")
