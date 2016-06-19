@@ -89,3 +89,28 @@ class Lifesteal(Skill):
         new_health = player.health + self.get_steal_amount(dmg_health)
         max_health = 100 + health_skill.bonus_health
         player.health = min(new_health, max_health)
+
+
+@skills.append
+class Armor_Regeneration(TickRepeatSkill):
+    "Regenerate +1 armor for each level every second."
+    max_level = 5
+
+    def _tick(self, player):
+        player.armor = min(player.armor + self.level, 100)
+        if player.armor >= 100:
+            self.tick_repeat.stop()
+
+    @event_callback('player_victim', 'player_upgrade_skill')
+    def _start_repeat(self, player, **event_args):
+        self.tick_repeat.args = (player,)
+        self.tick_repeat.start(1, 0)
+
+    @event_callback('player_death')
+    def _stop_repeat(self, **event_args):
+        self.tick_repeat.stop()
+
+    @event_callback('player_downgrade_skill')
+    def _stop_repeat_if_fully_downgraded(self, skill, **event_args):
+        if skill == self and skill.level <= 0:
+            self.tick_repeat.stop()
