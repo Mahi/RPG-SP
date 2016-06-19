@@ -27,7 +27,7 @@ class Health(Skill):
         player.health += self.bonus_health
 
 
-class Regenerate(Skill):
+class Regeneration(Skill):
     "Regenerate +1 health for each level every second."
     max_level = 5
 
