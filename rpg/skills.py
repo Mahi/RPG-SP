@@ -33,7 +33,7 @@ class Health(Skill):
 
 
 @skills.append
-class Regeneration(TickRepeatSkill):
+class Health_Regeneration(TickRepeatSkill):
     "Regenerate +1 health for each level every second."
     max_level = 5
 
