@@ -41,21 +41,21 @@ class Regeneration(TickRepeatSkill):
         max_health = 100 + health_skill.bonus_health
         player.health = min(player.health + self.level, max_health)
         if player.health >= max_health:
-            self._repeat.stop()
+            self.tick_repeat.stop()
 
     @event_callback('player_victim', 'player_upgrade_skill')
     def _start_repeat(self, player, **event_args):
-        self._repeat.args = (player, player.find_skill(Health.class_id))
-        self._repeat.start(1, 0)
+        self.tick_repeat.args = (player, player.find_skill(Health.class_id))
+        self.tick_repeat.start(1, 0)
 
     @event_callback('player_death')
     def _stop_repeat(self, **event_args):
-        self._repeat.stop()
+        self.tick_repeat.stop()
 
     @event_callback('player_downgrade_skill')
     def _stop_repeat_if_fully_downgraded(self, skill, **event_args):
         if skill == self and skill.level <= 0:
-            self._repeat.stop()
+            self.tick_repeat.stop()
 
 
 @skills.append
