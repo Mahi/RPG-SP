@@ -132,7 +132,7 @@ class StatsMenu(_SimpleRpgMenu):
             Text('Stats'),
             Text('Credits: {0}'.format(self.player.credits)),
             Text('Level: {0}'.format(self.player.level)),
-            Text('XP: {0}'.format(self.player.xp)),
+            Text('XP: {0}/{1}'.format(self.player.xp, self.player.required_xp)),
             SimpleOption(7, 'Back', self.parent_menu),
             SimpleOption(9, 'Close'),
         ])
