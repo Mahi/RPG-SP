@@ -11,6 +11,7 @@ skills = DecoratorAppendList()
 @skills.append
 class Bonus_Health(Skill):
     "Gain +25 health for each level on spawn."
+    name = 'Health+'
     max_level = 16
 
     @property
