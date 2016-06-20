@@ -1,5 +1,7 @@
 import easyplayer
 
+import rpg.listeners
+
 
 class Player(easyplayer.Player):
     """RPG player class with leveling system and skills.
@@ -59,10 +61,17 @@ class Player(easyplayer.Player):
             raise ValueError(
                 "Negative value '{0}' passed for give_xp()".format(amount))
         self._xp += amount
+        initial_level, initial_credits = self.level, self.credits
         while self.xp > self.required_xp:
             self._xp -= self.required_xp
             self._level += 1
             self._credits += 5
+        if initial_level < self.level:
+            rpg.listeners.OnPlayerLevelUp.manager.notify(
+                player=self,
+                levels=initial_level - self.level,
+                credits=initial_credits - self.credits,
+            )
 
     def reset_rpg_progress(self):
         """Completely reset player's RPG progress.
