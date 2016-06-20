@@ -9,6 +9,7 @@ from players.helpers import index_from_userid
 from players.helpers import playerinfo_from_index
 
 import rpg.database
+import rpg.listeners
 import rpg.menus
 import rpg.player
 import rpg.skills
@@ -113,6 +114,30 @@ def _execute_interaction_skill_callbacks(event):
     event_args.update(attacker=attacker, victim=victim)
     attacker.execute_skill_callbacks(_event_names[event.name][0], **event_args)
     victim.execute_skill_callbacks(_event_names[event.name][1], **event_args)
+
+
+@rpg.listeners.OnPlayerUpgradeSkill
+def _execute_skill_upgrade_skill_callbacks(player, skill, **event_args):
+    """Execute skill callbacks for player upgrading a skill.
+
+    Executes ``player_upgrade_skill`` on all player's skills,
+    and ``skill_upgrade`` on the skill being upgraded.
+    """
+    player.execute_skill_callbacks('player_upgrade_skill', skill=skill, **event_args)
+    if skill.level > 0:
+        skill.execute_callbacks('skill_upgrade', player=player, **event_args)
+
+
+@rpg.listeners.OnPlayerDowngradeSkill
+def _execute_skill_downgrade_skill_callbacks(player, skill, **event_args):
+    """Execute skill callbacks for player downgrading a skill.
+
+    Executes ``player_downgrade_skill`` on all player's skills,
+    and ``skill_upgrade`` on the skill being downgraded.
+    """
+    player.execute_skill_callbacks('player_downgrade_skill', skill=skill, **event_args)
+    if skill.level > 0:
+        skill.execute_callbacks('skill_downgrade', player=player, **event_args)
 
 
 # ======================================================================
