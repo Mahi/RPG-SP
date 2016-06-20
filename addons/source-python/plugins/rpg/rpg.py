@@ -14,6 +14,10 @@ import rpg.player
 import rpg.skills
 
 
+# ======================================================================
+# >> FUNCTIONS
+# ======================================================================
+
 def _new_player(index):
     """Create and prepare a new :class:`rpg.player.Player` instance.
 
@@ -33,17 +37,24 @@ def _new_player(index):
     return player
 
 
-# Globals
-_database = rpg.database.Database(PLUGIN_DATA_PATH / 'rpg.db')
-_players = PlayerDictionary(_new_player)
-
-
 def _save_player_data(player):
     """Save player's RPG data into the database."""
     _database.save_player_data(player.steamid, player.level, player.xp, player.credits)
     for skill in player.skills:
         _database.save_skill_data(player.steamid, skill.class_id, skill.level)
 
+
+# ======================================================================
+# >> GLOBALS
+# ======================================================================
+
+_database = rpg.database.Database(PLUGIN_DATA_PATH / 'rpg.db')
+_players = PlayerDictionary(_new_player)
+
+
+# ======================================================================
+# >> DATABASE EVENT CALLBACKS
+# ======================================================================
 
 def unload():
     """Store players' data and close the the database."""
@@ -62,6 +73,10 @@ def _save_player_data_on_event(event):
     _save_player_data(_players[index])
     _database.commit()
 
+
+# ======================================================================
+# >> SKILL EXECUTION EVENT CALLBACKS
+# ======================================================================
 
 @Event('player_jump', 'player_spawn')
 def _execute_independent_skill_callbacks(event):
@@ -99,6 +114,10 @@ def _execute_interaction_skill_callbacks(event):
     attacker.execute_skill_callbacks(_event_names[event.name][0], **event_args)
     victim.execute_skill_callbacks(_event_names[event.name][1], **event_args)
 
+
+# ======================================================================
+# >> MISCELLANEOUS CALLBACKS
+# ======================================================================
 
 @ClientCommand('rpg')
 @SayCommand('rpg')
