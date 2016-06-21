@@ -102,7 +102,7 @@ class Blacksmith(TickRepeatSkill):
         if player.armor >= 100:
             self.tick_repeat.stop()
 
-    @event_callback('player_victim', 'player_upgrade_skill')
+    @event_callback('player_spawn', 'player_victim', 'player_upgrade_skill')
     def _start_repeat(self, player, **event_args):
         self.tick_repeat.args = (player,)
         self.tick_repeat.start(1, 0)
