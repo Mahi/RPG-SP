@@ -65,14 +65,14 @@ class Long_Jump(Skill):
     max_level = 6
 
     @property
-    def jump_multiplier(self):
+    def vertical_velocity_multiplier(self):
         return 1 + 0.05 * self.level
 
     @event_callback('player_jump')
     def _jump_further(self, player, **event_args):
         velocity = player.velocity
-        velocity.x *= self.jump_multiplier
-        velocity.y *= self.jump_multiplier
+        velocity.x *= self.vertical_velocity_multiplier
+        velocity.y *= self.vertical_velocity_multiplier
         player.base_velocity = velocity
 
 
