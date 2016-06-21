@@ -124,8 +124,7 @@ def _execute_skill_upgrade_skill_callbacks(player, skill, **event_args):
     and ``skill_upgrade`` on the skill being upgraded.
     """
     player.execute_skill_callbacks('player_upgrade_skill', skill=skill, **event_args)
-    if skill.level > 0:
-        skill.execute_callbacks('skill_upgrade', player=player, **event_args)
+    skill.execute_callbacks('skill_upgrade', player=player, **event_args)
 
 
 @rpg.listeners.OnPlayerDowngradeSkill
@@ -136,8 +135,7 @@ def _execute_skill_downgrade_skill_callbacks(player, skill, **event_args):
     and ``skill_upgrade`` on the skill being downgraded.
     """
     player.execute_skill_callbacks('player_downgrade_skill', skill=skill, **event_args)
-    if skill.level > 0:
-        skill.execute_callbacks('skill_downgrade', player=player, **event_args)
+    skill.execute_callbacks('skill_downgrade', player=player, **event_args)
 
 
 # ======================================================================
