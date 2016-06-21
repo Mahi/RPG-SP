@@ -15,7 +15,7 @@ class Health(Skill):
     max_level = 16
 
     @property
-    def bonus_health(self):
+    def bonus_amount(self):
         return self.level * 25
 
     @event_callback('player_upgrade_skill')
@@ -25,12 +25,12 @@ class Health(Skill):
 
     @event_callback('player_downgrade_skill')
     def _take_level_bonus(self, player, skill, **event_args):
-        if skill == self and player.health > 100 + self.bonus_health:
-            player.health = 100 + self.bonus_health
+        if skill == self and player.health > 100 + self.bonus_amount:
+            player.health = 100 + self.bonus_amount
 
     @event_callback('player_spawn')
     def _give_bonus_health(self, player, **event_args):
-        player.health += self.bonus_health
+        player.health += self.bonus_amount
 
 
 @skills.append
@@ -39,14 +39,14 @@ class Regeneration(TickRepeatSkill):
     max_level = 5
 
     def _tick(self, player, health_skill):
-        max_health = 100 + health_skill.bonus_health
+        max_health = 100 + health_skill.bonus_amount
         player.health = min(player.health + self.level, max_health)
         if player.health >= max_health:
             self.tick_repeat.stop()
 
     @event_callback('player_victim', 'player_upgrade_skill')
     def _start_repeat(self, player, **event_args):
-        self.tick_repeat.args = (player, player.find_skill(Bonus_Health.class_id))
+        self.tick_repeat.args = (player, player.find_skill(Health.class_id))
         self.tick_repeat.start(1, 0)
 
     @event_callback('player_death')
@@ -88,7 +88,7 @@ class Vampirism(Skill):
     def _grant_health(self, player, dmg_health, **eargs):
         health_skill = player.find_skill(Health.class_id)
         new_health = player.health + self.get_steal_amount(dmg_health)
-        max_health = 100 + health_skill.bonus_health
+        max_health = 100 + health_skill.bonus_amount
         player.health = min(new_health, max_health)
 
 
