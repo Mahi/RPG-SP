@@ -18,14 +18,13 @@ class Health(Skill):
     def bonus_amount(self):
         return self.level * 25
 
-    @event_callback('player_upgrade_skill')
-    def _give_level_bonus(self, player, skill, **event_args):
-        if skill == self:
-            player.health += 25
+    @event_callback('skill_upgrade')
+    def _give_level_bonus(self, player, **event_args):
+        player.health += 25
 
-    @event_callback('player_downgrade_skill')
-    def _take_level_bonus(self, player, skill, **event_args):
-        if skill == self and player.health > 100 + self.bonus_amount:
+    @event_callback('skill_downgrade')
+    def _take_level_bonus(self, player, **event_args):
+        if player.health > 100 + self.bonus_amount:
             player.health = 100 + self.bonus_amount
 
     @event_callback('player_spawn')
@@ -44,7 +43,7 @@ class Regeneration(TickRepeatSkill):
         if player.health >= max_health:
             self.tick_repeat.stop()
 
-    @event_callback('player_victim', 'player_upgrade_skill')
+    @event_callback('player_victim', 'skill_upgrade')
     def _start_repeat(self, player, **event_args):
         self.tick_repeat.args = (player, player.find_skill(Health.class_id))
         self.tick_repeat.start(1, 0)
@@ -53,9 +52,9 @@ class Regeneration(TickRepeatSkill):
     def _stop_repeat(self, **event_args):
         self.tick_repeat.stop()
 
-    @event_callback('player_downgrade_skill')
-    def _stop_repeat_if_fully_downgraded(self, skill, **event_args):
-        if skill == self and skill.level <= 0:
+    @event_callback('skill_downgrade')
+    def _stop_repeat_if_fully_downgraded(self, **event_args):
+        if self.level == 0:
             self.tick_repeat.stop()
 
 
@@ -102,7 +101,7 @@ class Blacksmith(TickRepeatSkill):
         if player.armor >= 100:
             self.tick_repeat.stop()
 
-    @event_callback('player_spawn', 'player_victim', 'player_upgrade_skill')
+    @event_callback('player_spawn', 'player_victim', 'skill_upgrade')
     def _start_repeat(self, player, **event_args):
         self.tick_repeat.args = (player,)
         self.tick_repeat.start(1, 0)
@@ -111,7 +110,7 @@ class Blacksmith(TickRepeatSkill):
     def _stop_repeat(self, **event_args):
         self.tick_repeat.stop()
 
-    @event_callback('player_downgrade_skill')
-    def _stop_repeat_if_fully_downgraded(self, skill, **event_args):
-        if skill == self and skill.level <= 0:
+    @event_callback('skill_downgrade')
+    def _stop_repeat_if_fully_downgraded(self, **event_args):
+        if self.level == 0:
             self.tick_repeat.stop()
