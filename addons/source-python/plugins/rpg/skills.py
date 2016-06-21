@@ -9,8 +9,8 @@ skills = DecoratorAppendList()
 
 
 @skills.append
-class Bonus_Health(Skill):
-    "Gain +25 health for each level on spawn."
+class Health(Skill):
+    "Increase maximum health."
     name = 'Health+'
     max_level = 16
 
@@ -34,8 +34,8 @@ class Bonus_Health(Skill):
 
 
 @skills.append
-class Health_Regeneration(TickRepeatSkill):
-    "Regenerate +1 health for each level every second."
+class Regeneration(TickRepeatSkill):
+    "Regenerate lost health over time."
     max_level = 5
 
     def _tick(self, player, health_skill):
@@ -61,7 +61,7 @@ class Health_Regeneration(TickRepeatSkill):
 
 @skills.append
 class Long_Jump(Skill):
-    "Travel much further with your jumps."
+    "Travel further with jumps."
     max_level = 6
 
     @property
@@ -77,8 +77,8 @@ class Long_Jump(Skill):
 
 
 @skills.append
-class Lifesteal(Skill):
-    "Steal health from enemies upon damaging them."
+class Vampirism(Skill):
+    "Steal health with attacks."
     max_level = 5
 
     def get_steal_amount(self, damage_dealt):
@@ -93,8 +93,8 @@ class Lifesteal(Skill):
 
 
 @skills.append
-class Armor_Regeneration(TickRepeatSkill):
-    "Regenerate +1 armor for each level every second."
+class Blacksmith(TickRepeatSkill):
+    "Generate armor over time."
     max_level = 5
 
     def _tick(self, player):
