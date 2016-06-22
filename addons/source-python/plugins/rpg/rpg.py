@@ -156,7 +156,7 @@ def _give_kill_xp(event):
     if not event['attacker'] or event['attacker'] == event['userid']:
         return
     attacker = _players.from_userid(event['attacker'])
-    victim = _players.from_userid(event['victim'])
+    victim = _players.from_userid(event['userid'])
     attacker.give_xp(victim.level)
 
 
