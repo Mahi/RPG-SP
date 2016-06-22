@@ -1,5 +1,6 @@
 import operator
 
+from commands import CommandReturn
 from commands.client import ClientCommand
 from commands.say import SayCommand
 from events import Event
@@ -148,6 +149,7 @@ def _send_rpg_menu(command, player_index, team_only=None):
     """Send rpg menu to the player using the command."""
     menu = rpg.menus.MainMenu(_players[player_index])
     menu.send(player_index)
+    return CommandReturn.BLOCK
 
 
 @Event('player_death')
