@@ -121,6 +121,10 @@ class Impulse(Skill):
     "Gain temporary speed boost when attacked."
     max_level = 8
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._delay = None
+
     @property
     def speed_amount(self):
         return 0.4 + self.level * 0.2
@@ -131,7 +135,17 @@ class Impulse(Skill):
 
     @event_callback('player_victim')
     def _give_temporary_speed_boost(self, player, **event_args):
-        player.shift_property('speed', self.speed_amount, duration=self.duration)
+
+        # Limit to one speed boost only
+        if self._delay is not None and self._delay.running:
+            return  
+
+        self._delay = player.shift_property('speed', self.speed_amount, self.duration)
+
+    @event_callback('player_death', 'player_disconnect')
+    def _cancel_delay(self, **event_args):
+        if self._delay is not None and self._delay.running:
+            self._delay.cancel()
 
 
 @skills.append
