@@ -114,3 +114,21 @@ class Blacksmith(TickRepeatSkill):
     def _stop_repeat_if_fully_downgraded(self, **event_args):
         if self.level == 0:
             self.tick_repeat.stop()
+
+
+@skills.append
+class Impulse(Skill):
+    "Gain temporary speed boost when attacked."
+    max_level = 8
+
+    @property
+    def speed_amount(self):
+        return 0.4 + self.level * 0.2
+
+    @property
+    def duration(self):
+        return 1 + self.level * 0.1
+
+    @event_callback('player_victim')
+    def _give_temporary_speed_boost(self, player, **event_args):
+        player.shift_property('speed', self.speed_amount, duration=self.duration)
