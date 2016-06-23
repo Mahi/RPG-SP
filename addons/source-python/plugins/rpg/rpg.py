@@ -90,7 +90,7 @@ _data_save_repeat.start(240, 0)
 # >> SKILL EXECUTION EVENT CALLBACKS
 # ======================================================================
 
-@Event('player_jump', 'player_spawn')
+@Event('player_jump', 'player_spawn', 'player_disconnect')
 def _execute_independent_skill_callbacks(event):
     """Execute skill callbacks for events with only one user.
 
