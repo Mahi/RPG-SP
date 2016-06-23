@@ -151,11 +151,11 @@ class Impulse(Skill):
 @skills.append
 class Fire_Grenade(Skill):
     "Burn your enemy with grenades."
-    max_level = 8
+    max_level = 10
 
     @property
     def duration(self):
-        return self.level * 0.1
+        return self.level / 2
 
     @event_callback('player_attack')
     def _burn_victim(self, victim, weapon, **event_args):
