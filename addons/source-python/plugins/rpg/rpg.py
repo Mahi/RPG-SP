@@ -4,6 +4,7 @@ from commands import CommandReturn
 from commands.client import ClientCommand
 from commands.say import SayCommand
 from events import Event
+from listeners.tick import TickRepeat
 from paths import PLUGIN_DATA_PATH
 from players.dictionary import PlayerDictionary
 from players.helpers import index_from_userid
@@ -55,25 +56,34 @@ _players = PlayerDictionary(_new_player)
 
 
 # ======================================================================
-# >> DATABASE EVENT CALLBACKS
+# >> DATABASE FUNCTIONS
 # ======================================================================
 
 def unload():
     """Store players' data and close the the database."""
-    for player in _players.values():
-        _save_player_data(player)
-    _database.commit()
+    _data_save_repeat.stop()
+    _save_everyones_data()
     _database.close()
 
 
-@Event('player_disconnect', 'player_spawn')
-def _save_player_data_on_event(event):
+@Event('player_disconnect')
+def _save_player_data_upon_disconnect(event):
     """Save player's RPG data into the database."""
     index = index_from_userid(event['userid'])
     if index not in _players:
         return
     _save_player_data(_players[index])
+    del _players[index]
+
+
+def _save_everyones_data():
+    """Save every player's RPG data into the database."""
+    for player in _players.values():
+        _save_player_data(player)
     _database.commit()
+
+_data_save_repeat = TickRepeat(_save_everyones_data)
+_data_save_repeat.start(240, 0)
 
 
 # ======================================================================
