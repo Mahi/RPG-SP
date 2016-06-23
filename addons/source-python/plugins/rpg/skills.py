@@ -48,7 +48,7 @@ class Regeneration(TickRepeatSkill):
         self.tick_repeat.args = (player, player.find_skill(Health.class_id))
         self.tick_repeat.start(1, 0)
 
-    @event_callback('player_death')
+    @event_callback('player_death', 'player_disconnect')
     def _stop_repeat(self, **event_args):
         self.tick_repeat.stop()
 
@@ -106,7 +106,7 @@ class Blacksmith(TickRepeatSkill):
         self.tick_repeat.args = (player,)
         self.tick_repeat.start(1, 0)
 
-    @event_callback('player_death')
+    @event_callback('player_death', 'player_disconnect')
     def _stop_repeat(self, **event_args):
         self.tick_repeat.stop()
 
