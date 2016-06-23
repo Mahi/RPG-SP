@@ -132,3 +132,18 @@ class Impulse(Skill):
     @event_callback('player_victim')
     def _give_temporary_speed_boost(self, player, **event_args):
         player.shift_property('speed', self.speed_amount, duration=self.duration)
+
+
+@skills.append
+class Fire_Grenade(Skill):
+    "Burn your enemy with grenades."
+    max_level = 8
+
+    @property
+    def duration(self):
+        return self.level * 0.1
+
+    @event_callback('player_attack')
+    def _burn_victim(self, victim, weapon, **event_args):
+        if weapon == 'hegrenade':
+            victim.burn(self.duration)
