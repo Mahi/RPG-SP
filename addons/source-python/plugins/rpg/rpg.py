@@ -15,6 +15,7 @@ import rpg.listeners
 import rpg.menus
 import rpg.player
 import rpg.skills
+import rpg.utils
 
 
 # ======================================================================
@@ -179,3 +180,14 @@ def _give_hurt_xp(event):
         return
     attacker = _players.from_userid(event['attacker'])
     attacker.give_xp(event['dmg_health'])
+
+
+@rpg.listeners.OnPlayerLevelUp
+def _make_bots_upgrade_skills(player, levels, credits):
+    """Selects an unupgraded skill and levels it."""
+    if player.steamid != 'BOT':
+        return
+    for skill in rpg.utils.shuffled(player.skills):
+        if player.can_upgrade_skill(skill):
+            player.upgrade_skill(skill)
+            break
