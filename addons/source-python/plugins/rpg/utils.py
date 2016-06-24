@@ -1,3 +1,6 @@
+import random
+
+
 class ClassProperty:
     """Read-only property for classes instead of instances.
 
@@ -74,3 +77,17 @@ class DecoratorAppendList(list):
         """
         super().append(item)
         return item
+
+
+def shuffled(iterable):
+    """Shuffle the iterable "out-of-place".
+
+    Duplicates the iterable before shuffling it with
+    :func:`random.shuffle()`.
+
+    :returns iterable:
+        A shuffled copy of the iterable
+    """
+    duplicate = list(iterable)
+    random.shuffle(duplicate)
+    return duplicate
