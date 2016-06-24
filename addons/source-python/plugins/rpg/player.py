@@ -84,6 +84,23 @@ class Player(easyplayer.Player):
         for skill in self.skills:
             skill.level = 0
 
+    def can_upgrade_skill(self, skill):
+        """Check if a player can upgrade his skill.
+
+        :returns bool:
+            ``True`` if the skill can be upgraded, else ``False``
+        """
+        return (skill in self.skills and self.credits >= skill.upgrade_cost and
+            (skill.max_level is None or skill.max_level > skill.level))
+
+    def can_downgrade_skill(self, skill):
+        """Check if a player can downgrade his skill.
+
+        :returns bools:
+            ``True`` if the skill can be downgraded, else ``False``
+        """
+        return skill in self.skills and skill.level > 0
+
     def upgrade_skill(self, skill):
         """Upgrade the player's skill's level by one.
 
@@ -91,15 +108,8 @@ class Player(easyplayer.Player):
 
         :param rpg.skill.Skill skill:
             Skill to upgrade
-        :raises ValueError:
-            If the skill is not in player's skills
         """
-        if skill not in self.skills:
-            raise ValueError(
-                "Skill '{0}'' not in player's skills".format(skill))
-        if self.credits < skill.upgrade_cost:
-            return
-        if skill.max_level is not None and skill.level >= skill.max_level:
+        if not self.can_upgrade_skill(skill):
             return
         self._credits -= skill.upgrade_cost
         skill.level += 1
@@ -112,13 +122,8 @@ class Player(easyplayer.Player):
 
         :param rpg.skill.Skill skill:
             Skill to downgrade
-        :raises ValueError:
-            If the skill is not in player's skills
         """
-        if skill not in self.skills:
-            raise ValueError(
-                "Skill '{0}'' not in player's skills".format(skill))
-        if skill.level <= 0:
+        if not self.can_downgrade_skill(skill):
             return
         self._credits += skill.downgrade_refund
         skill.level -= 1
