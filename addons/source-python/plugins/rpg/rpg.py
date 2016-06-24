@@ -118,13 +118,15 @@ def _execute_interaction_skill_callbacks(event):
     Takes the game event's name and finds the corresponding
     attacker and victim event names from the ``_event_names`` dict.
     """
-    if not event['attacker'] or event['attacker'] == event['userid']:
-        return
     event_args = event.variables.as_dict()
-    attacker = _players.from_userid(event_args.pop('attacker'))
+    if event['attacker']:
+        attacker = _players.from_userid(event_args.pop('attacker'))
+    else:
+        attacker = None
     victim = _players.from_userid(event_args.pop('userid'))
     event_args.update(attacker=attacker, victim=victim)
-    attacker.execute_skill_callbacks(_event_names[event.name][0], **event_args)
+    if attacker is not None:
+        attacker.execute_skill_callbacks(_event_names[event.name][0], **event_args)
     victim.execute_skill_callbacks(_event_names[event.name][1], **event_args)
 
 

@@ -84,7 +84,9 @@ class Vampirism(Skill):
         return min(damage_dealt * self.level // 10, 10 * self.level)
 
     @event_callback('player_attack')
-    def _grant_health(self, player, dmg_health, **eargs):
+    def _grant_health(self, player, victim, dmg_health, **eargs):
+        if player == victim:
+            return
         health_skill = player.find_skill(Health.class_id)
         new_health = player.health + self.get_steal_amount(dmg_health)
         max_health = 100 + health_skill.bonus_amount
@@ -134,12 +136,11 @@ class Impulse(Skill):
         return 1 + self.level * 0.1
 
     @event_callback('player_victim')
-    def _give_temporary_speed_boost(self, player, **event_args):
-
-        # Limit to one speed boost only
+    def _give_temporary_speed_boost(self, player, victim, **event_args):
+        if player == victim:
+            return
         if self._delay is not None and self._delay.running:
-            return  
-
+            return  # Limit to one speed boost only
         self._delay = player.shift_property('speed', self.speed_amount, self.duration)
 
     @event_callback('player_death', 'player_disconnect')
@@ -158,6 +159,6 @@ class Fire_Grenade(Skill):
         return self.level / 2
 
     @event_callback('player_attack')
-    def _burn_victim(self, victim, weapon, **event_args):
-        if weapon == 'hegrenade':
+    def _burn_victim(self, player, victim, weapon, **event_args):
+        if player != victim and weapon == 'hegrenade':
             victim.burn(self.duration)
