@@ -1,5 +1,3 @@
-import operator
-
 from commands import CommandReturn
 from commands.client import ClientCommand
 from commands.say import SayCommand
