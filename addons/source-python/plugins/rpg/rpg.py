@@ -7,6 +7,7 @@ from menus import ListMenu
 from menus import PagedMenu
 from menus import PagedOption
 from menus import Text
+from messages import SayText2
 from paths import PLUGIN_DATA_PATH
 from players.dictionary import PlayerDictionary
 from players.helpers import index_from_userid
@@ -184,6 +185,16 @@ def _give_hurt_xp(event):
         return
     attacker = _players.from_userid(event['attacker'])
     attacker.give_xp(event['dmg_health'])
+
+
+_level_up_message = SayText2(_tr['Level Up Message'])
+
+@rpg.listeners.OnPlayerLevelUp
+def _send_level_up_message(player, levels, credits):
+    """Send a level up message to the leveling player."""
+    if player.steamid == 'BOT':
+        return
+    _level_up_message.send(player.index, player=player)
 
 
 @rpg.listeners.OnPlayerLevelUp
