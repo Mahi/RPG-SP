@@ -11,6 +11,7 @@ from paths import PLUGIN_DATA_PATH
 from players.dictionary import PlayerDictionary
 from players.helpers import index_from_userid
 from players.helpers import playerinfo_from_index
+from translations.strings import LangStrings
 
 import rpg.database
 import rpg.listeners
@@ -55,6 +56,7 @@ def _save_player_data(player):
 
 _database = rpg.database.Database(PLUGIN_DATA_PATH / 'rpg.db')
 _players = PlayerDictionary(_new_player)
+_tr = LangStrings('rpg')
 
 
 # ======================================================================
