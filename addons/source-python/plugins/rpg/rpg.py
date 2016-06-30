@@ -3,6 +3,10 @@ from commands.client import ClientCommand
 from commands.say import SayCommand
 from events import Event
 from listeners.tick import TickRepeat
+from menus import ListMenu
+from menus import PagedMenu
+from menus import PagedOption
+from menus import Text
 from paths import PLUGIN_DATA_PATH
 from players.dictionary import PlayerDictionary
 from players.helpers import index_from_userid
@@ -10,7 +14,6 @@ from players.helpers import playerinfo_from_index
 
 import rpg.database
 import rpg.listeners
-import rpg.menus
 import rpg.player
 import rpg.skills
 import rpg.utils
@@ -158,8 +161,7 @@ def _execute_skill_downgrade_skill_callbacks(player, skill, **event_args):
 @SayCommand('rpg')
 def _send_rpg_menu(command, player_index, team_only=None):
     """Send rpg menu to the player using the command."""
-    menu = rpg.menus.MainMenu(_players[player_index])
-    menu.send(player_index)
+    main_menu.send(player_index)
     return CommandReturn.BLOCK
 
 
@@ -191,3 +193,96 @@ def _make_bots_upgrade_skills(player, levels, credits):
         if player.can_upgrade_skill(skill):
             player.upgrade_skill(skill)
             break
+
+
+# ======================================================================
+# >> MENUS
+# ======================================================================
+
+def _on_main_menu_build(menu, player_index):
+    """Build the main menu."""
+    player = _players[player_index]
+    menu.clear()
+    menu.description = 'Credits: {0}'.format(player.credits)
+    menu.extend([
+        PagedOption('Upgrade Skills', upgrade_skills_menu),
+        PagedOption('Downgrade Skills', downgrade_skills_menu),
+        PagedOption('Stats', stats_menu),
+    ])
+
+def _on_main_menu_select(menu, player_index, choice):
+    """React to a main menu selection."""
+    player = _players[player_index]
+    return choice.value
+
+main_menu = PagedMenu(
+    title='RPG Main Menu',
+    build_callback=_on_main_menu_build,
+    select_callback=_on_main_menu_select,
+)
+
+
+def _on_upgrade_skills_menu_build(menu, player_index):
+    """Build the upgrade skills menu."""
+    player = _players[player_index]
+    menu.clear()
+    menu.description = 'Credits: {0}'.format(player.credits)
+    text = '{s.name} [{s.level}/{s.max_level}] ({s.upgrade_cost} credits)'
+    menu.extend([
+        PagedOption(text.format(s=skill), skill)
+        for skill in player.skills
+    ])
+
+def _on_upgrade_skills_menu_select(menu, player_index, choice):
+    """React to an upgrade skills menu selection."""
+    player = _players[player_index]
+    player.upgrade_skill(choice.value)
+    return menu
+
+upgrade_skills_menu = PagedMenu(
+    title='Upgrade Skills',
+    parent_menu=main_menu,
+    build_callback=_on_upgrade_skills_menu_build,
+    select_callback=_on_upgrade_skills_menu_select,
+)
+
+
+def _on_downgrade_skills_menu_build(menu, player_index):
+    """Build the downgrade skills menu."""
+    player = _players[player_index]
+    menu.clear()
+    menu.description = 'Credits: {0}'.format(player.credits)
+    text = '{s.name} [{s.level}/{s.max_level}] ({s.downgrade_refund} credits)'
+    menu.extend([
+        PagedOption(text.format(s=skill), skill)
+        for skill in player.skills
+    ])
+
+def _on_downgrade_skills_menu_select(menu, player_index, choice):
+    """React to a downgrade skills menu selection."""
+    player = _players[player_index]
+    player.downgrade_skill(choice.value)
+    return menu
+
+downgrade_skills_menu = PagedMenu(
+    title='Downgrade Skills',
+    parent_menu=main_menu,
+    build_callback=_on_downgrade_skills_menu_build,
+    select_callback=_on_downgrade_skills_menu_select,
+)
+
+
+def _on_stats_menu_build(menu, player_index):
+    """Build the stats menu."""
+    player = _players[player_index]
+    menu.clear()
+    menu.description = 'Credits: {0}'.format(player.credits)
+    menu.append(Text('Level: {0}'.format(player.level)))
+    menu.append(Text('XP: {0}/{1}'.format(player.xp, player.required_xp)))
+
+stats_menu = ListMenu(
+    title='Stats',
+    parent_menu=main_menu,
+    items_per_page=6,
+    build_callback=_on_stats_menu_build,
+)
