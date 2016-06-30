@@ -7,10 +7,12 @@ from menus import ListMenu
 from menus import PagedMenu
 from menus import PagedOption
 from menus import Text
+from messages import SayText2
 from paths import PLUGIN_DATA_PATH
 from players.dictionary import PlayerDictionary
 from players.helpers import index_from_userid
 from players.helpers import playerinfo_from_index
+from translations.strings import LangStrings
 
 import rpg.database
 import rpg.listeners
@@ -55,6 +57,7 @@ def _save_player_data(player):
 
 _database = rpg.database.Database(PLUGIN_DATA_PATH / 'rpg.db')
 _players = PlayerDictionary(_new_player)
+_tr = LangStrings('rpg')
 
 
 # ======================================================================
@@ -184,6 +187,16 @@ def _give_hurt_xp(event):
     attacker.give_xp(event['dmg_health'])
 
 
+_level_up_message = SayText2(_tr['Level Up Message'])
+
+@rpg.listeners.OnPlayerLevelUp
+def _send_level_up_message(player, levels, credits):
+    """Send a level up message to the leveling player."""
+    if player.steamid == 'BOT':
+        return
+    _level_up_message.send(player.index, player=player)
+
+
 @rpg.listeners.OnPlayerLevelUp
 def _make_bots_upgrade_skills(player, levels, credits):
     """Selects an unupgraded skill and levels it."""
@@ -203,11 +216,11 @@ def _on_main_menu_build(menu, player_index):
     """Build the main menu."""
     player = _players[player_index]
     menu.clear()
-    menu.description = 'Credits: {0}'.format(player.credits)
+    menu.description = _tr['Credits'].get_string(credits=player.credits)
     menu.extend([
-        PagedOption('Upgrade Skills', upgrade_skills_menu),
-        PagedOption('Downgrade Skills', downgrade_skills_menu),
-        PagedOption('Stats', stats_menu),
+        PagedOption(_tr['Upgrade Skills'], upgrade_skills_menu),
+        PagedOption(_tr['Downgrade Skills'], downgrade_skills_menu),
+        PagedOption(_tr['Stats'], stats_menu),
     ])
 
 def _on_main_menu_select(menu, player_index, choice):
@@ -216,7 +229,7 @@ def _on_main_menu_select(menu, player_index, choice):
     return choice.value
 
 main_menu = PagedMenu(
-    title='RPG Main Menu',
+    title=_tr['Main Menu'],
     build_callback=_on_main_menu_build,
     select_callback=_on_main_menu_select,
 )
@@ -226,12 +239,10 @@ def _on_upgrade_skills_menu_build(menu, player_index):
     """Build the upgrade skills menu."""
     player = _players[player_index]
     menu.clear()
-    menu.description = 'Credits: {0}'.format(player.credits)
-    text = '{s.name} [{s.level}/{s.max_level}] ({s.upgrade_cost} credits)'
-    menu.extend([
-        PagedOption(text.format(s=skill), skill)
-        for skill in player.skills
-    ])
+    menu.description = _tr['Credits'].get_string(credits=player.credits)
+    for skill in player.skills:
+        text = _tr['Skill Text'].get_string(skill=skill, credits=skill.upgrade_cost)
+        menu.append(PagedOption(text, skill))
 
 def _on_upgrade_skills_menu_select(menu, player_index, choice):
     """React to an upgrade skills menu selection."""
@@ -240,7 +251,7 @@ def _on_upgrade_skills_menu_select(menu, player_index, choice):
     return menu
 
 upgrade_skills_menu = PagedMenu(
-    title='Upgrade Skills',
+    title=_tr['Upgrade Skills'],
     parent_menu=main_menu,
     build_callback=_on_upgrade_skills_menu_build,
     select_callback=_on_upgrade_skills_menu_select,
@@ -251,12 +262,10 @@ def _on_downgrade_skills_menu_build(menu, player_index):
     """Build the downgrade skills menu."""
     player = _players[player_index]
     menu.clear()
-    menu.description = 'Credits: {0}'.format(player.credits)
-    text = '{s.name} [{s.level}/{s.max_level}] ({s.downgrade_refund} credits)'
-    menu.extend([
-        PagedOption(text.format(s=skill), skill)
-        for skill in player.skills
-    ])
+    menu.description = _tr['Credits'].get_string(credits=player.credits)
+    for skill in player.skills:
+        text = _tr['Skill Text'].get_string(skill=skill, credits=skill.downgrade_refund)
+        menu.append(PagedOption(text, skill))
 
 def _on_downgrade_skills_menu_select(menu, player_index, choice):
     """React to a downgrade skills menu selection."""
@@ -265,7 +274,7 @@ def _on_downgrade_skills_menu_select(menu, player_index, choice):
     return menu
 
 downgrade_skills_menu = PagedMenu(
-    title='Downgrade Skills',
+    title=_tr['Downgrade Skills'],
     parent_menu=main_menu,
     build_callback=_on_downgrade_skills_menu_build,
     select_callback=_on_downgrade_skills_menu_select,
@@ -276,12 +285,14 @@ def _on_stats_menu_build(menu, player_index):
     """Build the stats menu."""
     player = _players[player_index]
     menu.clear()
-    menu.description = 'Credits: {0}'.format(player.credits)
-    menu.append(Text('Level: {0}'.format(player.level)))
-    menu.append(Text('XP: {0}/{1}'.format(player.xp, player.required_xp)))
+    menu.description = _tr['Credits'].get_string(credits=player.credits)
+    menu.extend([
+        Text(_tr['Level'].get_string(player=player)),
+        Text(_tr['XP'].get_string(player=player)),
+    ])
 
 stats_menu = ListMenu(
-    title='Stats',
+    title=_tr['Stats'],
     parent_menu=main_menu,
     items_per_page=6,
     build_callback=_on_stats_menu_build,
