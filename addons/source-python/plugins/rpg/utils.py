@@ -80,12 +80,12 @@ class DecoratorAppendList(list):
 
 
 def shuffled(iterable):
-    """Shuffle the iterable "out-of-place".
+    """Shuffle an iterable "out-of-place".
 
-    Duplicates the iterable before shuffling it with
-    :func:`random.shuffle()`.
+    Duplicates the iterable to a list before shuffling
+    it with :func:`random.shuffle()`.
 
-    :returns iterable:
+    :returns list:
         A shuffled copy of the iterable
     """
     duplicate = list(iterable)
