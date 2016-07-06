@@ -1,3 +1,5 @@
+from players.constants import PlayerButtons
+
 from rpg.skill import event_callback
 from rpg.skill import Skill
 from rpg.skill import TickRepeatSkill
@@ -162,3 +164,18 @@ class Fire_Grenade(Skill):
     def _burn_victim(self, player, victim, weapon, **event_args):
         if player != victim and weapon == 'hegrenade':
             victim.burn(self.duration)
+
+
+@skills.append
+class Ice_Stab(Skill):
+    "Freeze enemies with the stronger knife stabs."
+    max_level = 8
+
+    @property
+    def duration(self):
+        return self.level * 0.2
+
+    @event_callback('player_attack')
+    def _freeze_if_right_click(self, player, victim, weapon, **event_args):
+        if weapon == 'knife' and player.buttons & PlayerButtons.ATTACK2:
+            victim.freeze(self.duration)
