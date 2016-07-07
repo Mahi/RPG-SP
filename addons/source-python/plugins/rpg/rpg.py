@@ -4,6 +4,7 @@ from commands.say import SayCommand
 from events import Event
 from listeners.tick import TickRepeat
 from menus import ListMenu
+from menus import ListOption
 from menus import PagedMenu
 from menus import PagedOption
 from menus import Text
@@ -220,6 +221,7 @@ def _on_main_menu_build(menu, player_index):
     menu.extend([
         PagedOption(_tr['Upgrade Skills'], upgrade_skills_menu),
         PagedOption(_tr['Downgrade Skills'], downgrade_skills_menu),
+        PagedOption(_tr['Skill Descriptions'], skill_descriptions_menu),
         PagedOption(_tr['Stats'], stats_menu),
     ])
 
@@ -278,6 +280,24 @@ downgrade_skills_menu = PagedMenu(
     parent_menu=main_menu,
     build_callback=_on_downgrade_skills_menu_build,
     select_callback=_on_downgrade_skills_menu_select,
+)
+
+
+def _on_skill_descriptions_menu_build(menu, player_index):
+    """Build the skill descriptions menu."""
+    player = _players[player_index]
+    menu.clear()
+    menu.description = _tr['Credits'].get_string(credits=player.credits)
+    menu.extend([
+        ListOption('{s.name}\n{s.description}'.format(s=skill))
+        for skill in player.skills
+    ])
+
+skill_descriptions_menu = ListMenu(
+    title=_tr['Skill Descriptions'],
+    parent_menu=main_menu,
+    items_per_page=3,
+    build_callback=_on_skill_descriptions_menu_build,
 )
 
 
