@@ -18,6 +18,9 @@ Here's a list of the current skills and a short description for each:
 - Long Jump — Travel further with jumps.
 - Vampirism — Steal health with attacks.
 - Blacksmith — Generate armor over time.
+- Impulse — Gain temporary speed boost when attacked.
+- Fire Grenade — Burn your enemies with grenades.
+- Ice Stab — Freeze the enemy with the stronger knife stab.
 
 ### Installation
 Before installing RPG:SP onto your game server, you must first install the two dependencies:
