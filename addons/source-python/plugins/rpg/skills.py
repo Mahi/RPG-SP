@@ -153,7 +153,7 @@ class Impulse(Skill):
 
 @skills.append
 class Fire_Grenade(Skill):
-    "Burn your enemy with grenades."
+    "Burn your enemies with grenades."
     max_level = 10
 
     @property
@@ -168,7 +168,7 @@ class Fire_Grenade(Skill):
 
 @skills.append
 class Ice_Stab(Skill):
-    "Freeze enemies with the stronger knife stabs."
+    "Freeze the enemy with the stronger knife stab."
     max_level = 8
 
     @property
