@@ -30,9 +30,9 @@ Before installing RPG:SP onto your game server, you must first install the two d
 
 Once that's done,
 
-1. download [RPG:SP's latest version](https://github.com/Mahi/RPG-SP/archive/master.zip)
-2. locate the `addons` folder inside of the downloaded `master.zip`
-3. extract the `addons` folder into your game folder (so you end up having f.e. `csgo/addons` folder)
+1. download RPG:SP's latest version from the [releases page](https://github.com/Mahi/RPG-SP/releases)
+2. locate the `addons` and `resource` folders inside of the downloaded `.zip` file
+3. extract the two folders into your game folder
 4. load the plugin with the `sp load rpg` command
 
 It's highly recommended to put the `sp load rpg` command into your server's `autoexec.cfg` so that the plugin gets loaded automatically whenever the server is started. 
