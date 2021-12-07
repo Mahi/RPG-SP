@@ -1,38 +1,43 @@
 # RPG:SP
-*The* RPG plugin for Source.Python
+RPG plugin for [Source.Python](https://sourcepython.com/).
 
-### About
-RPG:SP is a server-sided role-playing mod built with Source.Python.
-It has been tested only on CS:GO and CS:S, but should work fine on most Source engine games.
+## About
+RPG:SP is a server-sided role-playing mod for CS:GO, built with Source.Python.
 
-RPG:SP extends the game's players with an experience system and a set of unique skills — additional powers for players to spice up the game with.
-The objective is to gain experience points (XP for short) by attacking the opposing team's players.
-Once a player gains enough XP to fill his XP quota, the player will level up and gain credits, which can be spent to upgrade the player's skills.
-Each of these skills provides an unique effect for the player, allowing him to gain an advantage over a normal player.
+RPG:SP extends the game's player objects with an experience system and
+a set of *skills* — additional powers for players to spice up the game with.
 
-### Skills
-Here's a list of the current skills and a short description for each:
+The objective is to gain experience points (*XP* for short) by attacking the opposing team's players.
+Reaching enough XP will level your player up, granting you *credits* that can be spent to upgrade your skills.
+
+## Skills
+Here's a list of the pre-implemented skills:
 
 - Health+ — Increase maximum health.
 - Regeneration — Regenerate lost health over time.
 - Long Jump — Travel further with jumps.
 - Vampirism — Steal health with attacks.
-- Blacksmith — Generate armor over time.
 - Impulse — Gain temporary speed boost when attacked.
-- Fire Grenade — Burn your enemies with grenades.
+- Stealth — Become partially invisible.
 - Ice Stab — Freeze the enemy with the stronger knife stab.
 
-### Installation
-Before installing RPG:SP onto your game server, you must first install the two dependencies:
+But you can always implement more skills yourself (or make an issue in GitHub)!
+You should start from the `addons/source-python/plugins/rpg/skills/README.md` file
+and see the pre-implemented skills for more examples.
 
-- [Source.Python](http://sourcepython.com) to allow the Python programming language to be used with the Source engine.
-- [EasyPlayer](https://github.com/Mahi/EasyPlayer) to enable additional player effects.
+## Installation
+Before installing RPG:SP onto your game server, you must first install the following dependencies:
+
+- [Source.Python](http://sourcepython.com) to run Python plugins on the server
+- [EasyPlayer](https://github.com/Mahi/EasyPlayer) to allow additional player effects for the skills
+- [`PyYAML`](https://pypi.org/project/PyYAML/) to parse skills from YAML files
 
 Once that's done,
 
 1. download RPG:SP's latest version from the [releases page](https://github.com/Mahi/RPG-SP/releases)
 2. locate the `addons` and `resource` folders inside of the downloaded `.zip` file
 3. extract the two folders into your game folder
-4. load the plugin with the `sp load rpg` command
+4. load the plugin with the `sp plugin load rpg` command
 
-It's highly recommended to put the `sp load rpg` command into your server's `autoexec.cfg` so that the plugin gets loaded automatically whenever the server is started. 
+It's highly recommended to put the `sp plugin load rpg` command into your server's `autoexec.cfg`
+so that the plugin gets loaded automatically whenever the server is started. 

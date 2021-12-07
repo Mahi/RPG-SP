@@ -1,86 +1,114 @@
-import sqlite3
+# Site-Package imports
+from sqlalchemy import create_engine, Column, ForeignKey, Integer, MetaData, Table, Text
+from sqlalchemy.engine.url import URL
+from sqlalchemy.sql import select
+from sqlalchemy.sql.expression import bindparam
+
+# RPG:GO imports
+from . import config
+from .player import Player
 
 
-class Database:
-    """Wrapper class around sqlite3 for storing RPG players' data."""
+# Initialize table metadata
+metadata = MetaData()
+player_table = Table('player', metadata,
+    Column('steamid', Text, primary_key=True),
+    Column('level', Integer, nullable=False, default=0),
+    Column('xp', Integer, nullable=False, default=0),
+    Column('credits', Integer, nullable=False, default=0),
+)
 
-    def __init__(self, path=':memory:'):
-        """Connect and create ``players`` and ``skills`` tables.
+skill_table = Table('skill', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('key', Text, nullable=False),
+    Column('level', Integer, nullable=False, default=0),
+    Column('steamid', Text, ForeignKey('player.steamid'), nullable=False),
+)
 
-        :param str path:
-            Path to the database file or ``':memory:'`` for RAM
-        """
-        self._connection = sqlite3.connect(path)
-        self._connection.row_factory = sqlite3.Row
-        self._connection.execute('''
-            CREATE TABLE IF NOT EXISTS players (
-                steamid TEXT PRIMARY KEY NOT NULL,
-                level INTEGER NOT NULL,
-                xp INTEGER NOT NULL,
-                credits INTEGER NOT NULL
-            )''')
-        self._connection.execute('''
-            CREATE TABLE IF NOT EXISTS skills (
-                steamid TEXT NOT NULL,
-                class_id TEXT NOT NULL,
-                level INTEGER NOT NULL,
-                FOREIGN KEY (steamid) REFERENCES players(steamid),
-                PRIMARY KEY (steamid, class_id)
-            )''')
+# Create engine and missing tables
+engine = create_engine(URL(**config.DATABASE_URL))
+metadata.create_all(bind=engine)
 
-    def close(self):
-        """Close the connection to the database."""
-        self._connection.close()
 
-    def commit(self):
-        """Commit changes to the database."""
-        self._connection.commit()
+def create_player(player: Player) -> None:
+    """Insert a new player and their skills into the database.
+    
+    Also sets the skill objects's `_db_id` to match their database ID.
+    """
+    with engine.connect() as conn:
 
-    def save_player_data(self, steamid, level, xp, credits):
-        """Save player's data into the database."""
-        self._connection.execute(
-            'INSERT OR REPLACE INTO players VALUES (?, ?, ?, ?)',
-            (steamid, level, xp, credits))
+        conn.execute(
+            player_table.insert().values(
+                steamid=player.steamid,
+                level=player.level,
+                xp=player.xp,
+                credits=player.credits,
+            )
+        )
 
-    def save_skill_data(self, steamid, class_id, level):
-        """Save skill's data into the database."""
-        self._connection.execute(
-            'INSERT OR REPLACE INTO skills VALUES (?, ?, ?)',
-            (steamid, class_id, level))
+        skills = list(player.skills)
+        result = conn.execute(
+            skill_table.insert().values([
+                {
+                    'key': skill.key,
+                    'level': skill.level,
+                    'steamid': player.steamid,
+                }
+                for skill in skills
+            ])
+        )
 
-    def load_player_data(self, steamid):
-        """Load player's data from the database.
+        for id, skill in zip(result.inserted_primary_key, skills):
+            skill._db_id = id
 
-        :returns tuple:
-            Player's level, xp, and credits or ``(0, 0, 0)`` by default
-        """
-        for row in self._connection.execute(
-                'SELECT level, xp, credits FROM players WHERE steamid=?',
-                (steamid,)):
-            return row
-        return 0, 0, 0
 
-    def load_skill_data(self, steamid, class_id):
-        """Load skill's data from the database.
+def save_player(player: Player) -> None:
+    """Update a player's and their skills's data into the database."""
+    with engine.connect() as conn:
 
-        :returns tuple:
-            Skill's level or ``(0,)`` by default
-        """
-        for row in self._connection.execute(
-                'SELECT level FROM skills WHERE steamid=? AND class_id=?',
-                (steamid, class_id)):
-            return row
-        return 0,
+        conn.execute(
+            player_table.update().where(player_table.c.steamid==player.steamid).values(
+                level=player.level,
+                xp=player.xp,
+                credits=player.credits
+            )
+        )
 
-    def __enter__(self):
-        """Enter method to allow usage with ``with`` statement.
+        conn.execute(
+            skill_table.update().where(skill_table.c.id==bindparam('db_id')).values(
+                {
+                    'level': skill.level,
+                    'db_id': skill._db_id
+                }
+                for skill in list(player.skills)
+            )
+        )
 
-        :returns Database:
-            The database object itself
-        """
-        return self
 
-    def __exit__(self, exc_type, exc_value, exc_traceback):
-        """Commit changes and close the database safely."""
-        self.commit()
-        self.close()
+def load_player(player: Player) -> bool:
+    """Fetch a player's and their skills's data from the database.
+    
+    Returns `False` if there was no match for the player's steamid.
+    """
+    with engine.connect() as conn:
+
+        result = conn.execute(
+            select([player_table]).where(player_table.c.steamid==player.steamid)
+        )
+        player_data = result.first()
+        if player_data is None:
+            return False
+        player._level = player_data.level
+        player._xp = player_data.xp
+        player.credits = player_data.credits
+
+        result = conn.execute(
+            select([skill_table]).where(skill_table.c.steamid==player.steamid)
+        )
+        for skill_data in result:
+            skill = player.get_skill(skill_data.key)
+            if skill is not None:
+                 skill.level = skill_data.level
+                 skill._db_id = skill_data.id
+
+    return True

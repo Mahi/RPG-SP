@@ -2,12 +2,10 @@
 __pycache__/
 *.pyc
 
-// Visual Studio
+// IDEs
 .vs/
 *.pyproj
 *.sln
-
-// PyCharm
 .idea/
 
 // Database

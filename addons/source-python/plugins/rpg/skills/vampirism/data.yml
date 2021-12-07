@@ -1,0 +1,4 @@
+max_level: 5
+variables:
+  heal_per_damage_per_level: 0.1
+  maximum_heal_per_level: 10

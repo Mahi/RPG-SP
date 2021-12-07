@@ -1,0 +1,4 @@
+max_level: 8
+variables:
+  base_stealth: 0.1
+  stealth_per_level: 0.06

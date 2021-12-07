@@ -1,0 +1,8 @@
+max_level: 8
+variables:
+  duration:
+    base: 1
+    per_level: 0.1
+  boost: 
+    base: 0.2
+    per_level: 0.2

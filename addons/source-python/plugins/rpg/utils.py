@@ -1,93 +1,43 @@
-import random
+from math import sqrt
+from random import shuffle
+from typing import Any, Dict, Iterable, List, Optional, TypeVar
 
 
-class ClassProperty:
-    """Read-only property for classes instead of instances.
+def arithmetic_series(n: int, i: int=1, d: int=1) -> int:
+    """Calculate the sum of a finite arithmetic progression."""
+    max_ = i + (n - 1) * d
+    return n * (i + max_) // 2
 
-    Acts as a combination of :func:`property` and :func:`classmethod`
-    to create properties for classes.
 
-    Although it is possible to create a plain class property and
-    set the :attr:`fget` manually later on, it's usually easier to
-    use :class:`ClassProperty` as a decorator:
+def inverse_arithmetic_series(arithmetic_series, i: int=1, d: int=1) -> int:
+    """Find `n` of an arithmetic series from its summation."""
+    # Solve arithmetic series by n:
+    # -dn^2 + (d-2i)n + 2*arithmetic_series = 0
+    D = (d - 2 * i) ** 2 + 8 * d * arithmetic_series
+    if D < 0:
+        raise ValueError('D < 0')
+    n1 = ((2 * i - d) + sqrt(D)) // (-2 * d)
+    if D == 0 or n1 > 0:
+        return n1
+    return ((2 * i - d) - sqrt(D)) // (-2 * d)
 
-    .. code-block:: python
 
-        class My_Class:
+T = TypeVar('T')
 
-            @ClassProperty
-            def name(cls):
-                return cls.__name__.replace('_', ' ')
 
-        obj = My_Class()
-
-        print('Accessed through the class:', My_Class.name)
-        print('Accessed through the object:', obj.name)
-
-        class My_Subclass(My_Class):
-            pass
-
-        print('Accessed through the subclass:', My_Subclass.name)
-
-    Output:
-
-    .. code-block:: none
-
-        Accessed through the class: My Class
-        Accessed through the object: My Class
-        Accessed through the subclass: My Subclass
+def first_value(dict_: Dict[Any, T], default: Optional[T]=None) -> T:
+    """Get the first value from a dictionary.
+    
+    Return `default` value if the dictionary is empty.
     """
-
-    def __init__(self, fget=None, doc=None):
-        """Initialize the class property with a function.
-
-        :param callable|None fget:
-            Function to call when the property is accessed
-        """
-        if doc is None and fget is not None:
-            doc = fget.__doc__
-        self.fget = fget
-        self.__doc__ = doc
-
-    def __get__(self, obj, type_):
-        """Call the :attr:`fget` when the class property is accessed.
-
-        :param object obj:
-            Object used to access the class property (can be None)
-        :param type type_:
-            Class used to access the class property
-        """
-        if type_ is None and obj is not None:
-            type_ = type(obj)
-        return self.fget(type_)
+    try:
+        return next(iter(dict_.values()))
+    except StopIteration:
+        return default
 
 
-class DecoratorAppendList(list):
-    """List which allows ``append`` to be used as a decorator."""
-
-    def append(self, item):
-        """Append an item to the list.
-
-        Returns the item so can be used as a decorator.
-
-        :param object item:
-            Item to append to the list
-        :returns object:
-            The appended item
-        """
-        super().append(item)
-        return item
-
-
-def shuffled(iterable):
-    """Shuffle an iterable "out-of-place".
-
-    Duplicates the iterable to a list before shuffling
-    it with :func:`random.shuffle()`.
-
-    :returns list:
-        A shuffled copy of the iterable
-    """
-    duplicate = list(iterable)
-    random.shuffle(duplicate)
-    return duplicate
+def shuffled(iterable: Iterable[T]) -> List[T]:
+    """Return a randomly shuffled list of an iterable."""
+    copy = list(iterable)
+    shuffle(copy)
+    return copy

@@ -1,0 +1,7 @@
+health
+regeneration
+longjump
+vampirism
+impulse
+stealth
+icestab
