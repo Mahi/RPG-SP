@@ -5,8 +5,8 @@ from typing import Any, Dict, Iterable, Optional
 # Custom package imports
 import easyplayer
 
-# RPG:GO imports
-from . import config
+# RPG imports
+from .config import REQUIRED_XP
 from .listeners import OnPlayerDowngradeSkill, OnPlayerLevelUp, OnPlayerUpgradeSkill
 from .skill import Skill
 
@@ -65,7 +65,7 @@ class Player(easyplayer.Player):
     @property
     def required_xp(self) -> int:
         """XP required to reach the next level."""
-        return config.REQUIRED_XP['base'] + config.REQUIRED_XP['per_level'] * self.level
+        return REQUIRED_XP['base'] + REQUIRED_XP['per_level'] * self.level
 
     def give_xp(self, amount: int) -> None:
         """Give experience points to the player.

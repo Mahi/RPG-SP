@@ -4,7 +4,7 @@ from sqlalchemy.engine.url import URL
 from sqlalchemy.sql import select
 from sqlalchemy.sql.expression import bindparam
 
-# RPG:GO imports
+# RPG imports
 from . import config
 from .player import Player
 

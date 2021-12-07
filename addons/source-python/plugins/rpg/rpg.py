@@ -18,7 +18,7 @@ from players.dictionary import PlayerDictionary
 from players.helpers import index_from_userid
 from translations.strings import LangStrings
 
-# RPG:GO imports
+# RPG imports
 import rpg.builder
 import rpg.config
 import rpg.database

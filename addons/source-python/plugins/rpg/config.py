@@ -1,12 +1,15 @@
+# Source.Python imports
 from paths import PLUGIN_DATA_PATH
 
 
+# How much XP is required to level up
 REQUIRED_XP = {
     'base': 100,
     'per_level': 20,
 }
 
 
+# How much XP to gain from kills/damage
 XP_GAIN = {
     'on_kill': {
         'base': 80,
@@ -18,6 +21,7 @@ XP_GAIN = {
 }
 
 
+# Database URL in SQLAlchemy's format
 DATABASE_URL = {
     'drivername': 'sqlite',
     'username': '',

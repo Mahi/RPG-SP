@@ -11,7 +11,7 @@ import yaml
 from path import Path
 from translations.strings import LangStrings
 
-# RPG:GO imports
+# RPG imports
 import rpg.skills
 from .skill import SkillType
 
